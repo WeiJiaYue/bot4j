@@ -1,15 +1,16 @@
-import com.binance.client.RequestOptions;
 import com.binance.client.SubscriptionClient;
-import com.binance.client.SubscriptionListener;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
-import com.binance.client.model.event.CandlestickEvent;
 import com.binance.client.model.market.Candlestick;
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBarSeriesBuilder;
+import org.ta4j.core.*;
+import org.ta4j.core.analysis.criteria.pnl.GrossReturnCriterion;
+import org.ta4j.core.analysis.criteria.pnl.ProfitLossCriterion;
+import org.ta4j.core.analysis.criteria.pnl.ProfitLossPercentageCriterion;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.CrossedDownIndicatorRule;
+import org.ta4j.core.rules.CrossedUpIndicatorRule;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,85 +21,65 @@ import java.util.List;
  * Created by louisyuu on 2021/8/12 3:42 下午
  */
 public class Bootstrap {
+    // Creating a time series (from any provider: CSV, web service, etc.)
+    static BarSeries series = new BaseBarSeriesBuilder().build();
 
-
-
-    public static void main(String[] args) throws Exception {
-
-
-        // Creating a time series (from any provider: CSV, web service, etc.)
-        BarSeries series = new BaseBarSeriesBuilder().withMaxBarCount(3).build();
-
-
-        // adding open, high, low, close and volume data to the series
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.1, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.2, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.3, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.4, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.5, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.6, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.7, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.8, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 111.9, 1337);
-        Thread.sleep(100);
-        series.addBar(ZonedDateTime.now(), 105.42, 112.99, 104.01, 112, 1337);
-        // Getting the close price of the ticks
-        Num firstClosePrice = series.getBar(0).getClosePrice();
-        System.out.println("First close price: " + firstClosePrice.doubleValue());
-        // Or within an indicator:
-        ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
-        // Here is the same close price:
-        System.out.println(firstClosePrice.isEqual(closePrice.getValue(-1))); // equal to firstClosePrice
-
-        // Getting the simple moving average (SMA) of the close price over the last 5 ticks
-        SMAIndicator shortSma = new SMAIndicator(closePrice, 3);
-        // Here is the 5-ticks-SMA value at the 42nd index
-        System.out.println("5-ticks-SMA value at the 42nd index: " + shortSma.getValue(3).doubleValue());
-
-
-    }
-
-
-    static BarSeries series;
-    static int sampleCount = 10;
+    static int sampleCount = 1000;
     static String symbol = "btcusdt";
     static CandlestickInterval default_candle_stick_interval = CandlestickInterval.ONE_MINUTE;
 
     static {
-        series = new BaseBarSeriesBuilder().withMaxBarCount(sampleCount).build();
-        initKline();
-
+        initialization();
+//        livingStream();
     }
 
-    private static void initKline() {
-        RequestOptions options = new RequestOptions();
+
+
+
+    private static void initialization() {
         SyncRequestClient syncRequestClient = SyncRequestClient.create();
-        List<Candlestick> candlestickList = syncRequestClient.getCandlestick(symbol, default_candle_stick_interval, null, null, sampleCount);
+        List<Candlestick> candlestickList = syncRequestClient.getCandlestick(symbol,
+                default_candle_stick_interval, null, null, sampleCount);
         for (Candlestick cs : candlestickList) {
-            Date date = new Date(cs.getCloseTime());
-            final ZoneId id = ZoneId.systemDefault();
-            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date.toInstant(), id);
+            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(new Date(cs.getCloseTime()).toInstant(), ZoneId.systemDefault());
             series.addBar(zonedDateTime, cs.getOpen(), cs.getHigh(), cs.getLow(), cs.getClose(), cs.getVolume());
         }
     }
 
-    public static void increaseUpdate() {
+    public static void livingStream() {
         SubscriptionClient client = SubscriptionClient.create();
-        client.subscribeCandlestickEvent(symbol, default_candle_stick_interval, (new SubscriptionListener<CandlestickEvent>() {
-            @Override
-            public void onReceive(CandlestickEvent event) {
-                System.out.println(event);
+        client.subscribeCandlestickEvent(symbol, default_candle_stick_interval, (event -> {
+            System.out.println(event);
+            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(new Date(event.getCloseTime()).toInstant(), ZoneId.systemDefault());
+            series.addBar(zonedDateTime, event.getOpen(), event.getHigh(), event.getLow(), event.getClose(), event.getVolume());
 //                client.unsubscribeAll();
-            }
         }), null);
     }
+
+    public static void main(String[] args) throws Exception {
+
+
+        //within an indicator:
+        ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
+
+        // Getting the simple moving average (SMA) of the close price over the last 5 ticks
+        SMAIndicator sma5 = new SMAIndicator(closePrice, 5);
+        SMAIndicator sma10 = new SMAIndicator(closePrice, 10);
+
+        Rule entryRule = new CrossedUpIndicatorRule(sma5, sma10);
+        Rule exitRule = new CrossedDownIndicatorRule(sma5, sma10);
+
+        Strategy myStrategy = new BaseStrategy(entryRule, exitRule);
+
+        BarSeriesManager seriesManager = new BarSeriesManager(series);
+
+        TradingRecord tradingRecord = seriesManager.run(myStrategy);
+
+        AnalysisCriterion criterion = new ProfitLossPercentageCriterion();
+        System.out.println("==========");
+        System.out.println("test:"+criterion.calculate(series, tradingRecord));
+
+    }
+
 
 }
