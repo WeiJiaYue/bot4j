@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="be4e68b5-298b-4266-96fe-2119654e95fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alibaba_fastjson_1_2_47.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_virtuald_curvesapi_1_04.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_12_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_15_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_lang_commons_lang_2_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_collections4_4_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_compress_1_18.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_lang3_3_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_4_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_ooxml_4_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_ooxml_schemas_4_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_xmlbeans_xmlbeans_3_0_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_21_0_GA.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_1_10_19.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_2_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_api_mockito_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_api_mockito_common_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_api_support_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_core_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_module_junit4_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_module_junit4_common_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_powermock_powermock_reflect_1_7_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_18_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ta4j_ta4j_core_0_14.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bot.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logs/2021-08-13.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bot/Proceed_by_excel_processor_635f6b16-6cde-4f3e-97ae-5fe7e9986a67.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/Bootstrap.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/bot/Snapshot.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/bot/excel/ExcelDatum.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/bot/excel/ExcelProcessor.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/bot/excel/ExcelUtil.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/RequestOptions.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/ResponseCallback.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/SubscriptionClient.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/SubscriptionErrorHandler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/SubscriptionListener.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/SubscriptionOptions.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/SyncRequestClient.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/constant/BinanceApiConstants.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/exception/BinanceApiException.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/ApiSignature.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/BinanceApiInternalFactory.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/ChannelParser.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/InputChecker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/RestApiInvoker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/RestApiJsonParser.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/RestApiRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/RestApiRequestImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/SyncRequestImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebSocketConnection$ConnectionState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebSocketConnection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebSocketStreamClientImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebSocketWatchDog.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebsocketRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/WebsocketRequestImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/Channels.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/EnumLookup.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/Handler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/InternalUtils.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/JsonWrapper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/JsonWrapperArray.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/UrlParamsBuilder$ParamsMap.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/impl/utils/UrlParamsBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/ResponseResult.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/AccountChangeModeEnum.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/AccountChangeType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/AccountState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/AccountType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/BalanceMode.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/BalanceType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/CandlestickInterval.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/CrossMarginTransferType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/DealRole.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/DepositState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/DepthStep.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/EtfStatus.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/EtfSwapType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/IncomeType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/LoanOrderStates.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/MBPLevelEnums.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/MarginTransferType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/NewOrderRespType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/OrderRespType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/OrderSide.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/OrderSource.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/OrderState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/OrderType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/PeriodType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/PositionSide.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/QueryDirection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/QuerySort.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/SideEffectType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/StopOrderOperator.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/SymbolState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TimeInForce.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TradeDirection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TransactType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TransferFuturesDirection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TransferMasterType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/TransferType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/WithdrawState.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/enums/WorkingType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/AggregateTradeEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/CandlestickEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/LiquidationOrderEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/MarkPriceEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/OrderBookEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/SymbolBookTickerEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/SymbolMiniTickerEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/event/SymbolTickerEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/AggregateTrade.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/Candlestick.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/CommonLongShortRatio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/ExchangeFilter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/ExchangeInfoEntry.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/ExchangeInformation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/FundingRate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/LiquidationOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/MarkPrice.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/OpenInterestStat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/OrderBook.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/OrderBookEntry.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/PriceChangeTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/RateLimit.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/SymbolOrderBook.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/SymbolPrice.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/TakerLongShortStat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/market/Trade.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/AccountBalance.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/AccountInformation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/Asset.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/Income.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/Leverage.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/MyTrade.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/Order.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/Position.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/PositionRisk.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/trade/WalletDeltaLog.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/user/AccountUpdate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/user/BalanceUpdate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/user/OrderUpdate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/user/PositionUpdate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/binance/client/model/user/UserDataUpdateEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/logback.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/sample/MASample$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/sample/MASample.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/sample/MASampleWithMaxBarCount$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/sample/MASampleWithMaxBarCount.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/constants/PrivateConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/Get24hrTickerPriceChange.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetAggregateTrades.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetCandlestick.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetExchangeInformation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetFundingRate.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetGlobalAccountRatio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetLiquidationOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetMarkPrice.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetOldTrades.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetOpenInterestStat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetOrderBook.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetRecentTrades.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetSymbolOrderBookTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetSymbolPriceTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetTakerLongShortRatio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetTakerLongShortStat.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetTopTraderAccountRatio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/market/GetTopTraderPositionRatio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/AddIsolatedPositionMargin.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/BatchCancelOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/BatchPlaceOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/CancelAllOpenOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/CancelOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/ChangeInitialLeverage.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/ChangeMarginType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/ChangePositionSide.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetAccountInformation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetAccountTrades.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetAllOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetBalance.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetIncomeHistory.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetOpenOrders.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetPositionMarginHistory.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetPositionRisk.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/GetPositionSide.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/trade/PostOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/user/SubscribeUserData.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeAggregateTrade.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeAllBookTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeAllLiquidationOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeAllMiniTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeAllTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeBookDepth.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeCandlestick$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeCandlestick.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeDiffDepth.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeMarkPrice.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeSymbolBookTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeSymbolLiquidationOrder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeSymbolMiniTicker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/binance/client/examples/websocket/SubscribeSymbolTicker.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="$USER_HOME$/Documents/development/repository" />
+        <option name="mavenHome" value="$USER_HOME$/Documents/development/apache-maven-3.5.0" />
+        <option name="userSettingsFile" value="$USER_HOME$/Documents/development/apache-maven-3.5.0/conf/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1wZkjv4WulwcQNg7RoDmRcNOFOy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/bot" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/bot" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="bot.excel" />
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Snapshot">
+    <configuration name="Bootstrap" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Bootstrap" />
+      <module name="bot" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GetCandlestick" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.binance.client.examples.market.GetCandlestick" />
+      <module name="bot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.binance.client.examples.market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MASample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sample.MASample" />
+      <module name="bot" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MASampleWithMaxBarCount" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sample.MASampleWithMaxBarCount" />
+      <module name="bot" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Snapshot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="bot.Snapshot" />
+      <module name="bot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bot.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Snapshot" />
+        <item itemvalue="Application.Bootstrap" />
+        <item itemvalue="Application.MASample" />
+        <item itemvalue="Application.MASampleWithMaxBarCount" />
+        <item itemvalue="Application.GetCandlestick" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="be4e68b5-298b-4266-96fe-2119654e95fa" name="Default Changelist" comment="" />
+      <created>1628673852281</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1628673852281</updated>
+      <workItem from="1628673853800" duration="2611000" />
+      <workItem from="1628730768756" duration="14495000" />
+      <workItem from="1628818531515" duration="19111000" />
+    </task>
+    <task id="LOCAL-00001" summary="init">
+      <created>1628762245429</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1628762245429</updated>
+    </task>
+    <task id="LOCAL-00002" summary="init">
+      <created>1628762393575</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1628762393575</updated>
+    </task>
+    <task id="LOCAL-00003" summary="init">
+      <created>1628762498709</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1628762498709</updated>
+    </task>
+    <task id="LOCAL-00004" summary="init">
+      <created>1628762552219</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1628762552219</updated>
+    </task>
+    <task id="LOCAL-00005" summary="init">
+      <created>1628848881988</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1628848881988</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Boot.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/com/okcoin/commons/okex/open/api/test/futures/FuturesMarketAPITests.java</url>
+          <line>197</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/okcoin/commons/okex/open/api/client/APIClient.java</url>
+          <line>73</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/com/squareup/retrofit2/retrofit/2.3.0/retrofit-2.3.0.jar!/retrofit2/OkHttpCall.class</url>
+          <line>142</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/sample/MASampleWithMaxBarCount.java</url>
+          <line>18</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/SMAIndicator.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/CachedIndicator.java</url>
+          <line>95</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/BaseBarSeries.java</url>
+          <line>334</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/BaseBarSeries.java</url>
+          <line>330</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/BaseBarSeries.java</url>
+          <line>319</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/CachedIndicator.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/CachedIndicator.java</url>
+          <line>110</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/sample/MASampleWithMaxBarCount.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/SMAIndicator.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/Documents/development/repository/org/ta4j/ta4j-core/0.14/ta4j-core-0.14-sources.jar!/org/ta4j/core/indicators/SMAIndicator.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
