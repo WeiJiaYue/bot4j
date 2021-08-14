@@ -21,6 +21,11 @@ import java.util.UUID;
 
 @Slf4j
 public abstract class ExcelProcessor {
+    public final static String projectPath = System.getProperty("user.dir");
+    public final static String srcPath = "/src/main/java/bot/";
+    public final static String filePath = projectPath + srcPath;
+    public final static String templateFileName = "CandlestickTemple.xlsx";
+    //
 
 
     protected String filepath;
@@ -86,6 +91,10 @@ public abstract class ExcelProcessor {
     private void produce(ExcelDatum rawAfterProcessed) {
         if (newFilename == null) {
             newFilename = "Proceed_by_excel_processor_" + UUID.randomUUID().toString() + ".xls";
+        } else {
+            if (newFilename.lastIndexOf(".xls") == -1) {
+                newFilename += ".xls";
+            }
         }
         if (newSheetName == null) {
             newSheetName = "HelloWorld";
@@ -101,18 +110,21 @@ public abstract class ExcelProcessor {
             } catch (IOException ioException) {
             }
         }
+
+        System.out.println();
     }
 
 
     /**
      * 加工
      */
-    protected void process() {
+    public void process() {
         ExcelDatum raw = getRaw();
         try {
             doProcess(raw);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
+            throw new RuntimeException("Do process exception", e);
         }
         if (isNeededGenerateNewExcel()) {
             produce(raw);
@@ -120,7 +132,7 @@ public abstract class ExcelProcessor {
     }
 
 
-    protected abstract void doProcess(ExcelDatum raw) throws Exception;
+    public abstract void doProcess(ExcelDatum raw) throws Exception;
 
 
     /**
@@ -180,4 +192,6 @@ public abstract class ExcelProcessor {
     public void setNeededGenerateNewExcel(boolean neededGenerateNewExcel) {
         this.neededGenerateNewExcel = neededGenerateNewExcel;
     }
+
+
 }

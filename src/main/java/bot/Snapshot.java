@@ -16,12 +16,15 @@ import java.util.*;
  * Created by louisyuu on 2021/8/13 5:34 下午
  */
 public class Snapshot extends ExcelProcessor {
-    public static void main(String[] args) throws Exception {
-        String filepath = "/Users/lewis/MyJavaWorkspace/bot/src/main/java/bot/";
-        String filename = "CandlestickTemple.xlsx";
-        Snapshot processor = new Snapshot(filepath, filename);
-        processor.process();
 
+    public final static String snapshot_file_name = "Binance_latest_one_min_candlestick.xls";
+
+
+
+    public static void main(String[] args) throws Exception {
+        Snapshot processor = new Snapshot(filePath, templateFileName);
+        processor.setNewFilename(snapshot_file_name);
+        processor.process();
     }
 
 
@@ -34,18 +37,18 @@ public class Snapshot extends ExcelProcessor {
         return syncRequestClient.getCandlestick("BTCUSDT",
                 CandlestickInterval.ONE_MINUTE,
                 null,
-                null, 5);
+                null, 1000);
 
     }
 
     @Override
-    protected void doProcess(ExcelDatum raw) throws Exception {
+    public void doProcess(ExcelDatum raw) throws Exception {
         List<Candlestick> candlesticks = getCandlestick();
         List<Map<String, String>> rows = new ArrayList<>();
         for (Candlestick candlestick : candlesticks) {
             Map<String, String> row = new HashMap<>();
             Date date = new Date(candlestick.getCloseTime());
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss");
             ZonedDateTime zoned = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
             row.put("ZoneDateTime", zoned.toString());
             row.put("Timestamp", String.valueOf(candlestick.getCloseTime()));
