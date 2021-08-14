@@ -85,7 +85,7 @@ public abstract class ExcelProcessor {
      */
     private void produce(ExcelDatum rawAfterProcessed) {
         if (newFilename == null) {
-            newFilename = "Proceed_by_excel_processor_" + UUID.randomUUID().toString() + ".xlsx";
+            newFilename = "Proceed_by_excel_processor_" + UUID.randomUUID().toString() + ".xls";
         }
         if (newSheetName == null) {
             newSheetName = "HelloWorld";

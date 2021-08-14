@@ -108,7 +108,7 @@ public class ExcelUtil {
     }
 
     public static String getCellValue(Cell cell) {
-        return getCellValue(cell, null, "dd-MM-yy:HH:mm:ss");
+        return getCellValue(cell, null, "yyyy-MM-dd:HH:mm:ss");
     }
 
 
