@@ -10,6 +10,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,14 @@ public class BackingTest {
     static BarSeries series = new BaseBarSeriesBuilder().build();
 
 
+    static List<BigDecimal> sma5Results = new ArrayList<>();
+    static List<BigDecimal> sma10Results = new ArrayList<>();
+
+
     public static void main(String[] args) throws Exception {
 
         //init series
-        ExcelProcessor processor = new ExcelProcessor(ExcelProcessor.filePath, Snapshot.snapshot_file_name) {
+        ExcelProcessor processor = new ExcelProcessor(ExcelProcessor.filePath, SnapshotGenerator.snapshot_file_name) {
             @Override
             public void doProcess(ExcelDatum raw) throws Exception {
                 List<Map<String, String>> rows = raw.getDatum();
@@ -50,6 +55,16 @@ public class BackingTest {
         SMAIndicator sma5 = new SMAIndicator(closePrice, 5);
         SMAIndicator sma10 = new SMAIndicator(closePrice, 10);
 
+
+        for (int i = 1; i <= series.getEndIndex(); i++) {
+            if (i < 4) {
+                sma5Results.add(BigDecimal.ZERO);
+                sma10Results.add(BigDecimal.ZERO);
+                continue;
+            }
+            sma5.getValue(i);
+            sma10.getValue(i);
+        }
 
 
         System.out.println(series);

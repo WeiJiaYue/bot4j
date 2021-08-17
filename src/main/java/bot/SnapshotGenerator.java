@@ -15,20 +15,20 @@ import java.util.*;
 /**
  * Created by louisyuu on 2021/8/13 5:34 下午
  */
-public class Snapshot extends ExcelProcessor {
+public class SnapshotGenerator extends ExcelProcessor {
 
     public final static String snapshot_file_name = "Binance_latest_one_min_candlestick.xls";
 
 
 
     public static void main(String[] args) throws Exception {
-        Snapshot processor = new Snapshot(filePath, templateFileName);
+        SnapshotGenerator processor = new SnapshotGenerator(filePath, templateFileName);
         processor.setNewFilename(snapshot_file_name);
         processor.process();
     }
 
 
-    public Snapshot(String filepath, String filename) {
+    public SnapshotGenerator(String filepath, String filename) {
         super(filepath, filename);
     }
 
