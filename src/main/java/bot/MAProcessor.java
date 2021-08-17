@@ -33,6 +33,10 @@ public class MAProcessor extends ExcelProcessor {
         raw.getHeaders().add("SMA5");
         raw.getHeaders().add("SMA10");
         raw.getHeaders().add("Ops");
+        raw.getHeaders().add("TradingPrice");
+        raw.getHeaders().add("StopLossPrice");
+        raw.getHeaders().add("TradingId");
+        raw.getHeaders().add("Status");
         List<Map<String, String>> rows = raw.getDatum();
         int index = 0;
         for (Map<String, String> row : rows) {
@@ -64,25 +68,43 @@ public class MAProcessor extends ExcelProcessor {
 
 
                 if (ma10 > ma5) {
-                    System.out.println("==> 开多并且平空");
+                    System.out.println("==> ");
                     int stopLossIdx = index;
-                    double stopLoss = series.getBar(stopLossIdx--).getLowPrice().doubleValue();
+                    Bar stopLossBar = series.getBar(--stopLossIdx);
+                    double stopLoss = stopLossBar.getLowPrice().doubleValue();
                     for (int i = stopLossIdx; i > stopLossIdx - 5; i--) {
-                        double other = series.getBar(i).getLowPrice().doubleValue();
+                        Bar pre = series.getBar(i);
+                        double other = pre.getLowPrice().doubleValue();
                         stopLoss = Math.min(stopLoss, other);
                     }
                     Bar current = series.getBar(index);
 
-                    System.out.println("==> 开多点位：" + current.getOpenPrice().doubleValue() + " 止损点：" + stopLoss);
+                    System.out.println("==> Long price：" + current.getOpenPrice().doubleValue() + " StopLoss price：" + stopLoss);
 
+
+
+                    row.put("Ops", "Long");
+                    row.put("TradingPrice", String.valueOf(current.getOpenPrice().doubleValue()));
+                    row.put("StopLossPrice", String.valueOf(stopLoss));
+                    row.put("TradingId", String.valueOf(index));
+                    row.put("Status", "Holding");
+                }
+
+                if (ma10 < ma5) {
+//                    System.out.println("开空且平多");
+                    row.put("Ops", "StopGainOrClose");
+                    Bar current = series.getBar(index);
+
+                    row.put("TradingPrice", String.valueOf(current.getOpenPrice().doubleValue()));
 
                 }
+
+
+
                 if (ma10 == ma5) {
 //                    System.out.println("待定");
                 }
-                if (ma10 < ma5) {
-//                    System.out.println("开空且平多");
-                }
+
             }
 
             index++;
@@ -93,7 +115,7 @@ public class MAProcessor extends ExcelProcessor {
 
         //init series
         MAProcessor processor = new MAProcessor(ExcelProcessor.filePath, SnapshotGenerator.snapshot_file_name);
-        processor.setNeededGenerateNewExcel(false);
+//        processor.setNeededGenerateNewExcel(false);
         processor.process();
 
 //        System.out.println(sma5Results);
