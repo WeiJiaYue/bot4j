@@ -19,11 +19,17 @@ public class SnapshotGenerator extends ExcelProcessor {
 
     public final static String snapshot_file_name = "Binance_latest_one_min_candlestick.xls";
 
+    public final static String MINUTES_30 = "MINUTES_30.xls";
+
+    public final static String HOURS_4 = "HOURS_4.xls";
+
+    static CandlestickInterval Interval = CandlestickInterval.FOUR_HOURLY;
+
 
 
     public static void main(String[] args) throws Exception {
         SnapshotGenerator processor = new SnapshotGenerator(filePath, templateFileName);
-        processor.setNewFilename(snapshot_file_name);
+        processor.setNewFilename(HOURS_4);
         processor.process();
     }
 
@@ -35,7 +41,7 @@ public class SnapshotGenerator extends ExcelProcessor {
     private List<Candlestick> getCandlestick() {
         SyncRequestClient syncRequestClient = SyncRequestClient.create();
         return syncRequestClient.getCandlestick("BTCUSDT",
-                CandlestickInterval.ONE_MINUTE,
+                Interval,
                 null,
                 null, 1000);
 
