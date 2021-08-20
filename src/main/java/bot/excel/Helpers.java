@@ -1,8 +1,9 @@
-package excel;
+package bot.excel;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,17 +17,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by lewis on 2017/7/10.
+ * Created by louisyuu
+ * <p>
+ * The core helper methods are
+ * excelToTable: Let excel data convert to java object {@link ExcelTable}
+ * tableToExcel: Let java object {@link ExcelTable} convert to excel data
  */
-public class ExcelUtil {
-    public static Workbook newWorkbook(InputStream in) throws IOException {
-        return WorkbookFactory.create(in);
+public class Helpers {
+
+    public enum ExcelSuffix {
+        xls, xlsx
     }
 
+    public static ExcelTable excelToTable(InputStream inputStream, int sheetNo) throws Exception {
+        return excelToTable(newWorkbook(inputStream), sheetNo);
+    }
 
-    public static ExcelTable convertToExcelDatum(Workbook workbook, int sheetNo) throws Exception {
-        List<String> columnNames = new ArrayList<>();
-        List<Map<String, String>> resultList = new ArrayList<>();
+    public static ExcelTable excelToTable(Workbook workbook, int sheetNo) throws Exception {
+        List<String> columns = new ArrayList<>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         //第几个sheet
         Sheet sheet = workbook.getSheetAt(sheetNo);
         int firstRowNum = sheet.getFirstRowNum();
@@ -45,80 +54,91 @@ public class ExcelUtil {
                     if (cell == null) {
                         continue;
                     }
-                    columnNames.add(getCellValue(cell));
+                    columns.add(getCellValue(cell));
                 }
                 continue;
             }
-            Map<String, String> cellContentMap = new HashMap<>();
+            Map<String, Object> cellContentMap = new HashMap<>();
             for (int cellIndex = firstCellNum; cellIndex <= lastCellNum; cellIndex++) {
                 Cell cell = row.getCell(cellIndex);
                 if (cell == null) {
                     continue;
                 }
-                String colName = columnNames.get(cellIndex);
+                String colName = columns.get(cellIndex);
                 String value = getCellValue(cell);
 
                 cellContentMap.put(colName, "" + value);
             }
             if (cellContentMap.size() > 0) {
-                resultList.add(cellContentMap);
+                rows.add(cellContentMap);
             }
         }
-        return new ExcelTable(columnNames, resultList);
+        return new ExcelTable(columns, rows);
     }
 
 
-    public static HSSFWorkbook newWorkbookWithDatum(ExcelTable excelDatum, String sheetName) {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-
-        List<Map<String, String>> bodies = excelDatum.getDatum();
-
-        List<String> headers = excelDatum.getHeaders();
-
+    public static Workbook tableToExcel(ExcelTable table, ExcelSuffix suffix, String sheetName) {
+        Workbook workbook = newWorkbook(suffix);
         /**
-         * 1.创建一个sheet
+         * 1.Create a sheet
          */
-        HSSFSheet sheet = workbook.createSheet(sheetName);
+        Sheet sheet = workbook.createSheet(sheetName);
         sheet.setColumnWidth(0, 20 * 256);
         sheet.setDefaultColumnWidth(20);
         sheet.setDefaultRowHeightInPoints(20);
         /**
-         * 2.创建第一行作为标题行
+         * 2.Create a 1st row as title row
          */
-        HSSFRow row = sheet.createRow(0);
+        Row excelRow = sheet.createRow(0);
         /**
-         * 3.给标题行存入标题
+         * 3.Padding title row
          */
         int cellIndex = 0;
-        for (String header : headers) {
-            HSSFCell cell = row.createCell(cellIndex);
-            cell.setCellValue(header);
+        for (String column : table.getColumns()) {
+            Cell cell = excelRow.createCell(cellIndex);
+            cell.setCellValue(column);
             cellIndex++;
         }
         /**
-         * 4.给数据行存入数据
+         * 4.Padding data row
          */
-        for (Map<String, String> mapRow : bodies) {
-            row = sheet.createRow((row.getRowNum() + 1));
+        for (Map<String, Object> tableRow : table.getRows()) {
+            excelRow = sheet.createRow((excelRow.getRowNum() + 1));
             cellIndex = 0;
-            for (String header : headers) {
-                HSSFCell cell = row.createCell(cellIndex);
-                cell.setCellValue(mapRow.get(header));
+            for (String column : table.getColumns()) {
+                Cell cell = excelRow.createCell(cellIndex);
+                cell.setCellValue(tableRow.get(column) == null ? null : String.valueOf(tableRow.get(column)));
                 cellIndex++;
             }
         }
         return workbook;
     }
 
-    public static String getCellValue(Cell cell) {
+    public static Workbook newWorkbook(ExcelSuffix suffix) {
+        if (suffix.equals(ExcelSuffix.xls)) {
+            return new HSSFWorkbook();
+        }
+        return new XSSFWorkbook();
+    }
+
+    public static Workbook newWorkbook(InputStream in) throws IOException {
+        return WorkbookFactory.create(in);
+    }
+
+
+    /**
+     * =================================Private methods=================================
+     */
+
+
+    private static String getCellValue(Cell cell) {
         return getCellValue(cell, null, "yyyy-MM-dd:HH:mm:ss");
     }
 
 
-    public static String getCellValue(Cell cell, FormulaEvaluator evaluator, String dataFormatter) {
+    private static String getCellValue(Cell cell, FormulaEvaluator evaluator, String dataFormatter) {
         if (cell == null
-                || (cell.getCellType() == CellType.STRING && StringUtils.isBlank(cell
-                .getStringCellValue()))) {
+                || (cell.getCellType() == CellType.STRING && isBlank(cell.getStringCellValue()))) {
             return null;
         }
         CellType cellType = cell.getCellType();
@@ -156,7 +176,7 @@ public class ExcelUtil {
             }
         } else if (cellType == CellType.NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell)) {
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat(dataFormatter);
                 return dateFormat.format(cell.getDateCellValue());
             } else {
                 DecimalFormat df = new DecimalFormat();
@@ -175,7 +195,6 @@ public class ExcelUtil {
     }
 
 
-    //fixme 暂时的法子
     private static String getNumericVal(String val) {
         int point = val.indexOf(".");
         if (point == -1) {
@@ -197,5 +216,20 @@ public class ExcelUtil {
             return val;
         }
 
+    }
+
+    private static boolean isBlank(CharSequence cs) {
+        int strLen;
+        if (cs != null && (strLen = cs.length()) != 0) {
+            for (int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(cs.charAt(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return true;
+        }
     }
 }

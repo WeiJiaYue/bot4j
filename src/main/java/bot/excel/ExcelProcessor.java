@@ -1,8 +1,5 @@
 package bot.excel;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -10,22 +7,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
- * Created by louisyuu on 2020/12/10 4:06 下午
+ * Created by louisyuu
  * <p>
- * <p>
- * <p>
- * Excel加工器
+ * An abstract excel processor
+ * Using Java to manipulate Excel's addition, deletion, modification, and query in batches is as simple as operating a Java collection
+ * Simple to use
  */
-
-@Slf4j
 public abstract class ExcelProcessor {
-    public final static String projectPath = System.getProperty("user.dir");
-    public final static String srcPath = "/src/main/java/bot/";
-    public final static String filePath = projectPath + srcPath;
-    public final static String templateFileName = "CandlestickTemple.xlsx";
-    //
+
+
+    private final static Logger log = Logger.getLogger(ExcelProcessor.class.getName());
 
 
     protected String filepath;
@@ -34,73 +28,65 @@ public abstract class ExcelProcessor {
 
     protected int sheetNo = 0;
 
-    protected String newFilename;
-
-    protected String newSheetName;
-
     protected boolean neededGenerateNewExcel = true;
 
+    //Default suffix is xls
+    //Use setNewFileSuffix() to override if required
+    protected Helpers.ExcelSuffix newFileSuffix = Helpers.ExcelSuffix.xls;
 
-    public ExcelProcessor() {
-    }
+    //Default new file name is ExcelDao_uuid.xls
+    //Use setNewFileName() to override if required
+    protected String newFilename = "ExcelDao_" + UUID.randomUUID() + newFileSuffix.name();
+
+
+    //Default sheet name is ExcelDao
+    //Use setNewSheetName() to override if required
+    protected String newSheetName = "ExcelDao";
+
 
     public ExcelProcessor(String filepath, String filename) {
         if (filepath.lastIndexOf("/") == -1) {
-            throw new RuntimeException("Filepath最后一个字符必须是斜杠[/]");
+            throw new RuntimeException("File path should end with forward slash [/]");
         }
         if (filename.indexOf("/") == 0) {
-            throw new RuntimeException("Filename第一个字符不能是斜杠[/]");
+            throw new RuntimeException("File name should not start with forward slash [/]");
         }
         this.filepath = filepath;
-        this.filename = filename;
+        setFilename(filename);
     }
 
 
     /**
      * First step
-     * 获取原材料
-     *
-     * @return
-     * @throws Exception
+     * <p>
+     * Convert excel to java object ExcelTable from disk
      */
-    private ExcelDatum getRaw() {
-        Workbook workbook = null;
+    private ExcelTable getExcelTable() {
         try {
             File file = new File(filepath + filename);
-            workbook = ExcelUtil.newWorkbook(new FileInputStream(file));
-            return ExcelUtil.convertToExcelDatum(workbook, sheetNo);
+            return Helpers.excelToTable(new FileInputStream(file), sheetNo);
         } catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.warning(e.getMessage());
             throw new RuntimeException(e);
-        } finally {
-            if (workbook != null) {
-                try {
-                    workbook.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
 
     /**
-     * 生产
-     *
-     * @param rawAfterProcessed
+     * Second step
+     * <p>
+     * Process by subclasses
      */
-    private void produce(ExcelDatum rawAfterProcessed) {
-        if (newFilename == null) {
-            newFilename = "Proceed_by_excel_processor_" + UUID.randomUUID().toString() + ".xls";
-        } else {
-            if (newFilename.lastIndexOf(".xls") == -1) {
-                newFilename += ".xls";
-            }
-        }
-        if (newSheetName == null) {
-            newSheetName = "HelloWorld";
-        }
-        HSSFWorkbook workbook = ExcelUtil.newWorkbookWithDatum(rawAfterProcessed, newSheetName);
+    public abstract void doProcess(ExcelTable table) throws Exception;
 
+
+    /**
+     * Last step
+     *
+     * Convert java object ExcelTable to excel file to disk
+     */
+    private void produce(ExcelTable table) {
+        Workbook workbook = Helpers.tableToExcel(table, newFileSuffix, newSheetName);
         try {
             File file = new File(filepath + newFilename);
             workbook.write(new FileOutputStream(file));
@@ -110,79 +96,44 @@ public abstract class ExcelProcessor {
             } catch (IOException ioException) {
             }
         }
-
-        System.out.println();
+        System.out.println("==> Proceed successfully.");
     }
 
 
     /**
-     * 加工
+     * Context process
      */
     public void process() {
-        ExcelDatum raw = getRaw();
+        ExcelTable table = getExcelTable();
         try {
-            doProcess(raw);
+            doProcess(table);
         } catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.warning(e.getMessage());
             throw new RuntimeException("Do process exception", e);
         }
         if (isNeededGenerateNewExcel()) {
-            produce(raw);
+            produce(table);
         }
     }
-
-
-    public abstract void doProcess(ExcelDatum raw) throws Exception;
 
 
     /**
      * =============Getters & Setters================
      */
 
-    public String getFilepath() {
-        return filepath;
-    }
-
     public void setFilepath(String filepath) {
         if (filepath.lastIndexOf("/") == -1) {
-            throw new RuntimeException("Filepath最后一个字符必须是斜杠[/]");
+            throw new RuntimeException("File path should end with forward slash [/]");
         }
         this.filepath = filepath;
     }
 
-    public String getFilename() {
-        return filename;
-    }
 
     public void setFilename(String filename) {
         if (filename.indexOf("/") == 0) {
-            throw new RuntimeException("Filename第一个字符不能是斜杠[/]");
+            throw new RuntimeException("File name should not start with forward slash [/]");
         }
         this.filename = filename;
-    }
-
-    public int getSheetNo() {
-        return sheetNo;
-    }
-
-    public void setSheetNo(int sheetNo) {
-        this.sheetNo = sheetNo;
-    }
-
-    public String getNewFilename() {
-        return newFilename;
-    }
-
-    public void setNewFilename(String newFilename) {
-        this.newFilename = newFilename;
-    }
-
-    public String getNewSheetName() {
-        return newSheetName;
-    }
-
-    public void setNewSheetName(String newSheetName) {
-        this.newSheetName = newSheetName;
     }
 
     public boolean isNeededGenerateNewExcel() {
@@ -191,6 +142,27 @@ public abstract class ExcelProcessor {
 
     public void setNeededGenerateNewExcel(boolean neededGenerateNewExcel) {
         this.neededGenerateNewExcel = neededGenerateNewExcel;
+    }
+
+    public void setSheetNo(int sheetNo) {
+        this.sheetNo = sheetNo;
+    }
+
+
+    public void setNewFileName(String newFilename) {
+        this.newFilename = newFilename;
+        if (this.newFilename.lastIndexOf(Helpers.ExcelSuffix.xls.name()) == -1
+                || this.newFilename.lastIndexOf(Helpers.ExcelSuffix.xlsx.name()) == -1) {
+            this.newFilename += ".xls";
+        }
+    }
+
+    public void setNewFileSuffix(Helpers.ExcelSuffix newFileSuffix) {
+        this.newFileSuffix = newFileSuffix;
+    }
+
+    public void setNewSheetName(String newSheetName) {
+        this.newSheetName = newSheetName;
     }
 
 

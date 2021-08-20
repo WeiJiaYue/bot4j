@@ -1,7 +1,7 @@
 package bot;
 
-import bot.excel.ExcelDatum;
 import bot.excel.ExcelProcessor;
+import bot.excel.ExcelTable;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.Candlestick;
@@ -17,19 +17,20 @@ import java.util.*;
  */
 public class SnapshotGenerator extends ExcelProcessor {
 
-    public final static String snapshot_file_name = "Binance_latest_one_min_candlestick.xls";
+    public final static String PROJECT_PATH = System.getProperty("user.dir");
+    public final static String SRC_PATH = "/src/main/java/bot/file/";
+    public final static String FILE_PATH = PROJECT_PATH + SRC_PATH;
+    public final static String CANDLESTICK_TEMPLE_FILE_NAME = "CandlestickTemple.xlsx";
 
-    public final static String MINUTES_30 = "MINUTES_30.xls";
 
-    public final static String HOURS_4 = "HOURS_4.xls";
-
-    static CandlestickInterval Interval = CandlestickInterval.FOUR_HOURLY;
-
+    //Custom
+    private final static CandlestickInterval INTERVAL = CandlestickInterval.FOUR_HOURLY;
+    private final static int KLINE_COUNT = 1000;
 
 
     public static void main(String[] args) throws Exception {
-        SnapshotGenerator processor = new SnapshotGenerator(filePath, templateFileName);
-        processor.setNewFilename(HOURS_4);
+        SnapshotGenerator processor = new SnapshotGenerator(FILE_PATH, CANDLESTICK_TEMPLE_FILE_NAME);
+        processor.setNewFileName(INTERVAL.val());
         processor.process();
     }
 
@@ -41,18 +42,17 @@ public class SnapshotGenerator extends ExcelProcessor {
     private List<Candlestick> getCandlestick() {
         SyncRequestClient syncRequestClient = SyncRequestClient.create();
         return syncRequestClient.getCandlestick("BTCUSDT",
-                Interval,
+                INTERVAL,
                 null,
-                null, 1000);
+                null, KLINE_COUNT);
 
     }
 
     @Override
-    public void doProcess(ExcelDatum raw) throws Exception {
+    public void doProcess(ExcelTable table) throws Exception {
         List<Candlestick> candlesticks = getCandlestick();
-        List<Map<String, String>> rows = new ArrayList<>();
         for (Candlestick candlestick : candlesticks) {
-            Map<String, String> row = new HashMap<>();
+            Map<String, Object> row = table.createEmptyRow();
             Date date = new Date(candlestick.getCloseTime());
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss");
             ZonedDateTime zoned = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
@@ -64,9 +64,8 @@ public class SnapshotGenerator extends ExcelProcessor {
             row.put("Low", String.valueOf(candlestick.getLow()));
             row.put("Close", String.valueOf(candlestick.getClose()));
             row.put("Volume", String.valueOf(candlestick.getVolume()));
-            rows.add(row);
+            table.addRow(row);
         }
-        raw.setDatum(rows);
     }
 
 

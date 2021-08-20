@@ -26,6 +26,10 @@ public enum CandlestickInterval {
         this.code = code;
     }
 
+    public final String val() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return code;
