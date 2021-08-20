@@ -1,6 +1,5 @@
 package bot;
 
-import bot.excel.ExcelProcessor;
 import bot.excel.ExcelTable;
 import com.binance.client.model.enums.CandlestickInterval;
 import org.ta4j.core.Bar;
@@ -13,56 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MAProcessor extends ExcelProcessor {
-    public final static BarSeries BAR_SERIES = BarSeriesHolder.BAR_SERIES;
+public class SMAStrategy {
+    public final static BarSeries BAR_SERIES = BarSeriesStream.BAR_SERIES;
     public final static List<Double> SMA5_SERIES = new ArrayList<>();
     public final static List<Double> SMA10_SERIES = new ArrayList<>();
-
     //Custom params
     public final static boolean LOSS_LESS = true;
     public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
     public final static double TAKER_FEE = 0.000360;
-    public final static CandlestickInterval interval = CandlestickInterval.DAILY;
-
+    public final static CandlestickInterval interval = CandlestickInterval.ONE_MINUTE;
+    private Record currentPosition;
 
     public static void main(String[] args) throws Exception {
 
-        String filename = interval.val();
-
-        //init series
-        MAProcessor processor = new MAProcessor(SnapshotGenerator.FILE_PATH, filename + ".xls");
-        processor.setNeededGenerateNewExcel(false);
-        processor.setNewFileName(filename + "-backtest");
-        processor.process();
 
     }
 
-
-    private double lastDiff;
-    private Record lastPosition;
-    private Record currentPosition;
-
-    public MAProcessor(String filepath, String filename) {
-        super(filepath, filename);
-    }
-
-
-    static class Record {
-        String ops;
-        double point;
-        double stopLoss;
-        double profit;
-        String id;
-
-        public Record(String ops, double point, double stopLoss, double profit, String id) {
-            this.ops = ops;
-            this.point = point;
-            this.stopLoss = stopLoss;
-            this.profit = profit;
-            this.id = id;
-        }
-    }
 
     private double getStopLoss(double point, int index) {
         int stopLossIdx = index;
@@ -78,8 +44,6 @@ public class MAProcessor extends ExcelProcessor {
         } else {
             stopLoss = Math.min(stopLoss, point * (1 - STOP_LOSS_PERCENTAGE));
         }
-
-
         return stopLoss;
     }
 
@@ -242,5 +206,21 @@ public class MAProcessor extends ExcelProcessor {
 
     }
 
+
+    static class Record {
+        String ops;
+        double point;
+        double stopLoss;
+        double profit;
+        String id;
+
+        public Record(String ops, double point, double stopLoss, double profit, String id) {
+            this.ops = ops;
+            this.point = point;
+            this.stopLoss = stopLoss;
+            this.profit = profit;
+            this.id = id;
+        }
+    }
 
 }

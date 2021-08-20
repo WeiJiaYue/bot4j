@@ -2,9 +2,6 @@ package bot;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
-import org.ta4j.core.indicators.SMAIndicator;
-import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-import org.ta4j.core.num.Num;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
