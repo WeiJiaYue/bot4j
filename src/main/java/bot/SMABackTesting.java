@@ -19,11 +19,13 @@ public class SMABackTesting extends ExcelProcessor {
     public final static List<Double> SMA10_SERIES = new ArrayList<>();
 
     //Custom params
-    public final static boolean LOSS_LESS = true;
+    public final static boolean LOSS_LESS = false;
     public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
-    public final static double TAKER_FEE = 0.000360;
+    public final static double TAKER_FEE = 0.00040;
     public final static CandlestickInterval interval = CandlestickInterval.ONE_MINUTE;
+    public static double BALANCE = 10000;
+    public static double INITIAL_BALANCE = 10000;
 
 
     public static void main(String[] args) throws Exception {
@@ -32,15 +34,12 @@ public class SMABackTesting extends ExcelProcessor {
 
         //init series
         SMABackTesting processor = new SMABackTesting(SnapshotGenerator.FILE_PATH, filename + ".xls");
-        processor.setNeededGenerateNewExcel(false);
+        processor.setNeededGenerateNewExcel(true);
         processor.setNewFileName(filename + "-backtest");
         processor.process();
 
     }
 
-
-    private double lastDiff;
-    private Record lastPosition;
     private Record currentPosition;
 
     public SMABackTesting(String filepath, String filename) {
@@ -52,16 +51,10 @@ public class SMABackTesting extends ExcelProcessor {
         String ops;
         double point;
         double stopLoss;
-        double profit;
         String id;
+        double volume;
 
-        public Record(String ops, double point, double stopLoss, double profit, String id) {
-            this.ops = ops;
-            this.point = point;
-            this.stopLoss = stopLoss;
-            this.profit = profit;
-            this.id = id;
-        }
+
     }
 
     private double getStopLoss(double point, int index) {
@@ -93,13 +86,13 @@ public class SMABackTesting extends ExcelProcessor {
         table.addColumn("Point");
         table.addColumn("StopLoss");
         table.addColumn("Txid");
-        table.addColumn("Profit");
+        table.addColumn("TradingVolume");
+        table.addColumn("Balance");
         table.addColumn("Fee");
         table.addColumn("NetProfit");
         table.addColumn("Rate");
 
         int index = 0;
-        double profit = 0;
         double fee = 0;
         double netProfit = 0;
         int openCount = 0;
@@ -110,6 +103,7 @@ public class SMABackTesting extends ExcelProcessor {
         double maxNetProfit = 0;
         double maxLoss = 0;
         double totalVolume = 0;
+        double totalAmount = 0;
 
         for (Map<String, Object> row : table.getRows()) {
             BarSeriesHolder.load(row);
@@ -131,45 +125,54 @@ public class SMABackTesting extends ExcelProcessor {
 
             double diff = ma5 - ma10;
             table.updateRow(row, "Diff", diff);
-            boolean mayCrossover = false;
-
             //正在缩小可能变盘
 //            if (diff < 0 && diff > -100) {
 //                lastDiff = diff;
 //                mayCrossover = true;
 //            }
-
-            //May crossover
+            //crossover
             if (ma5 > ma10 && currentPosition == null) {
                 double stopLoss = getStopLoss(current.getOpenPrice().doubleValue(), index);
-                currentPosition = new Record("OpenLong", current.getOpenPrice().doubleValue(), stopLoss, 0, String.valueOf(index));
+                currentPosition = new Record();
+                currentPosition.ops = "OpenLongOrder";
+                currentPosition.point = current.getOpenPrice().doubleValue();
+                currentPosition.stopLoss = stopLoss;
+                currentPosition.id = String.valueOf(index);
+                currentPosition.volume = BALANCE / currentPosition.point;
+
                 row.put("Ops", currentPosition.ops);
                 row.put("Point", currentPosition.point);
                 row.put("StopLoss", currentPosition.stopLoss);
                 row.put("Txid", currentPosition.id);
-                row.put("Profit", currentPosition.profit);
-                double openFee = currentPosition.point * TAKER_FEE;
+                double openFee = BALANCE * TAKER_FEE;
+                BALANCE -= openFee;
                 row.put("Fee", openFee);
-                row.put("NetProfit", currentPosition.profit - openFee);
+                row.put("NetProfit", 0 - openFee);
+                row.put("Balance", BALANCE);
+                row.put("TradingVolume", currentPosition.volume);
                 index++;
                 openCount++;
-                totalVolume += currentPosition.point;
+                totalVolume += currentPosition.volume;
+                totalAmount += BALANCE;
                 continue;
             }
             //StopLoss
             if (currentPosition != null && current.getLowPrice().doubleValue() < currentPosition.stopLoss) {
                 row.put("Ops", "StopLoss");
-                row.put("Point", String.valueOf(currentPosition.stopLoss));
-                row.put("StopLoss", "DoStopLoss");
+                row.put("Point", currentPosition.stopLoss);
+                row.put("StopLoss", 0);
                 row.put("Txid", currentPosition.id);
 
-                double closeProfit = currentPosition.stopLoss - currentPosition.point;
-                double closeFee = currentPosition.point * TAKER_FEE;
-
-                row.put("Profit", String.valueOf(closeProfit));
+                double newBalance = currentPosition.stopLoss * currentPosition.volume;
+                double closeFee = newBalance * TAKER_FEE;
+                double closeNetProfit = newBalance - BALANCE - closeFee;
+                BALANCE = BALANCE + closeNetProfit;
                 row.put("Fee", closeFee);
-                row.put("NetProfit", closeProfit - closeFee);
-                totalVolume += currentPosition.stopLoss;
+                row.put("NetProfit", closeNetProfit);
+                row.put("Balance", BALANCE);
+                row.put("TradingVolume", currentPosition.volume);
+                totalVolume += currentPosition.volume;
+                totalAmount += newBalance;
                 index++;
                 stopLossCount++;
                 lossCount++;
@@ -178,17 +181,20 @@ public class SMABackTesting extends ExcelProcessor {
             }
             //CloseLong
             if (currentPosition != null && ma5 < ma10) {
-                row.put("Ops", "CloseLong");
-                row.put("Point", String.valueOf(current.getOpenPrice().doubleValue()));
-                row.put("StopLoss", "0");
+                row.put("Ops", "CloseLongOrder");
+                row.put("Point", current.getOpenPrice().doubleValue());
+                row.put("StopLoss", 0);
                 row.put("Txid", currentPosition.id);
-                double closeProfit = current.getOpenPrice().doubleValue() - currentPosition.point;
-                double closeFee = current.getOpenPrice().doubleValue() * TAKER_FEE;
-                row.put("Profit", String.valueOf(closeProfit));
-                row.put("Fee", closeFee);
-                double closeNetProfit = closeProfit - closeFee;
-                row.put("NetProfit", closeNetProfit);
 
+                double newBalance = current.getOpenPrice().doubleValue() * currentPosition.volume;
+                double closeFee = newBalance * TAKER_FEE;
+                double closeNetProfit = newBalance - BALANCE - closeFee;
+                BALANCE = BALANCE + closeNetProfit;
+
+                row.put("Fee", closeFee);
+                row.put("NetProfit", closeNetProfit);
+                row.put("Balance", BALANCE);
+                row.put("TradingVolume", currentPosition.volume);
                 if (closeNetProfit > 0) {
                     successCount++;
                     maxNetProfit = Math.max(closeNetProfit, maxNetProfit);
@@ -196,7 +202,9 @@ public class SMABackTesting extends ExcelProcessor {
                     lossCount++;
                     maxLoss = Math.min(closeNetProfit, maxLoss);
                 }
-                totalVolume += current.getOpenPrice().doubleValue();
+                totalVolume += currentPosition.volume;
+                totalAmount += newBalance;
+
                 closeCount++;
                 currentPosition = null;
             }
@@ -205,11 +213,20 @@ public class SMABackTesting extends ExcelProcessor {
             }
 
 
-            if (!row.containsKey("Profit")) {
-                row.put("Profit", "0");
+            if (!row.containsKey("NetProfit")) {
+                row.put("NetProfit", "0");
             }
             index++;
-            profit += Double.parseDouble(String.valueOf(row.get("Profit") == null ? "0" : row.get("Profit")));
+
+        }
+
+        for (Map<String, Object> row : table.getRows()) {
+            if (!row.containsKey("NetProfit")) {
+                row.put("NetProfit", "0");
+            }
+            if (!row.containsKey("Fee")) {
+                row.put("Fee", "0");
+            }
             fee += Double.parseDouble(String.valueOf(row.get("Fee") == null ? "0" : row.get("Fee")));
             netProfit += Double.parseDouble(String.valueOf(row.get("NetProfit") == null ? "0" : row.get("NetProfit")));
         }
@@ -221,13 +238,16 @@ public class SMABackTesting extends ExcelProcessor {
 
         System.out.println("==> Date Range:" + formatter.format(firstBar.getBeginTime()) + " ==> " + formatter.format(lastBar.getBeginTime()));
 
-        System.out.println("==> Profit:" + profit);
+
+        System.out.println("==> CurrentBalance:" + BALANCE);
+        System.out.println("==> StatNetProfit:" + netProfit);
+        System.out.println("==> NetProfit:" + (BALANCE - INITIAL_BALANCE));
         System.out.println("==> Fee:" + fee);
-        System.out.println("==> NetProfit:" + netProfit);
         System.out.println();
         System.out.println("==> MaxNetProfit:" + maxNetProfit);
         System.out.println("==> MaxLoss:" + maxLoss);
         System.out.println("==> TotalVolume:" + totalVolume);
+        System.out.println("==> TotalAmount:" + totalAmount);
         System.out.println("==> ReturnFee:" + fee * 0.2);
 
         System.out.println("==> OpenCount:" + openCount);
