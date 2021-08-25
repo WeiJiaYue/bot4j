@@ -26,6 +26,8 @@ import java.util.Map;
  */
 public class BarSeriesStream {
     public final static BarSeries BAR_SERIES = new BaseBarSeriesBuilder().build();
+    public static volatile boolean LIVING = false;
+    public final static double LAST_PRICE = -1;
     public final static List<Double> SMA5_SERIES = new ArrayList<>();
     public final static List<Double> SMA10_SERIES = new ArrayList<>();
 
@@ -34,7 +36,8 @@ public class BarSeriesStream {
     private final static String SYMBOL = "BTCUSDT";
     private final static int KLINE_COUNT = 1000;
 
-    static {
+
+    public static void main(String[] args) {
         load();
         living();
     }
@@ -56,10 +59,13 @@ public class BarSeriesStream {
 
 
     public static void living() {
+
+
         SubscriptionClient client = SubscriptionClient.create();
-        client.subscribeCandlestickEvent(SYMBOL, INTERVAL, (event -> {
+        client.subscribeCandlestickEvent("btcusdt", INTERVAL, (event -> {
             ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(new Date(event.getCloseTime()).toInstant(), ZoneId.systemDefault());
             BAR_SERIES.addBar(zonedDateTime, event.getOpen(), event.getHigh(), event.getLow(), event.getClose(), event.getVolume());
+            LIVING = true;
 
         }), exception -> {
             System.out.println("==> Websocket error");
