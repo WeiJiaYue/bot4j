@@ -1,5 +1,7 @@
 package bot.trade;
 
+import org.ta4j.core.Bar;
+
 /**
  * Created by louisyuu on 2021/8/30 3:30 下午
  */
@@ -14,6 +16,10 @@ public class OrderRecord {
     double quantity = 0;
     double profit = 0;
     double fee = 0;
+
+    Bar bar;
+    double ma5 = -1;
+    double ma10 = -1;
 
     private OrderRecord() {
     }
@@ -68,6 +74,22 @@ public class OrderRecord {
 
     public OrderRecord fee(double fee) {
         this.fee = fee;
+        return this;
+    }
+
+
+    public OrderRecord bar(Bar bar) {
+        this.bar = bar;
+        return this;
+    }
+
+    public OrderRecord ma5(double ma5) {
+        this.ma5 = ma5;
+        return this;
+    }
+
+    public OrderRecord ma10(double ma10) {
+        this.ma10 = ma10;
         return this;
     }
 

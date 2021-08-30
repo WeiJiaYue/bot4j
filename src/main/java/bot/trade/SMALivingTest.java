@@ -1,6 +1,7 @@
 package bot.trade;
 
-import bot.BarSeriesStream;
+import bot.BarLivingStream;
+import bot.DateUtil;
 import com.binance.client.model.enums.CandlestickInterval;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -16,7 +17,7 @@ public class SMALivingTest {
     public final static double TAKER_FEE = 0.00040;
     public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
     public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
-    public final static int HISTORY_KLINE_COUNT = 1000;
+    public final static int HISTORY_KLINE_COUNT = 100;
     public static double BALANCE = 10000;
     private final static Stats STATS = new Stats();
 
@@ -27,69 +28,87 @@ public class SMALivingTest {
             System.out.println();
             System.out.println(STATS);
         }));
-        BarSeriesStream barSeriesStream = new BarSeriesStream(INTERVAL, SYMBOL_FOR_TRADING, HISTORY_KLINE_COUNT);
-        barSeriesStream.setLastBarStream(BAR_SERIALS -> {
-            ClosePriceIndicator closePrice = new ClosePriceIndicator(BAR_SERIALS);
-            SMAIndicator sma5Indicator = new SMAIndicator(closePrice, 5);
-            SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
-            int lastIndex = BAR_SERIALS.getEndIndex();
+        BarLivingStream livingStream = new BarLivingStream(INTERVAL, SYMBOL_FOR_TRADING, HISTORY_KLINE_COUNT);
 
-            double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
-            double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-            if (lastIndex < WARMUP_COUNT) {
-                return;
-            }
-            System.out.println();
-            System.out.println("==> Cyclic run strategy");
+        BarSeries barSeries = livingStream.getBarSeries();
 
-            //crossover
-            if (ma5 > ma10 && currentPosition == null) {
-                double stopLoss = getStopLossWhenLong(BAR_SERIALS, barSeriesStream.getLastPrice(), lastIndex);
-                openLong(barSeriesStream, BAR_SERIALS, stopLoss);
-            }
-            //CloseLong
-            else if (currentPosition != null && ma5 < ma10) {
-                closeLong(OrderRecord.Ops.CloseLong, barSeriesStream);
+        ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
+        SMAIndicator sma5Indicator = new SMAIndicator(closePrice, 5);
+        SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
+        livingStream.run();
+        System.out.println();
+        System.out.println("==> Started at " + DateUtil.getCurrentDateTime());
+
+        livingStream.setLastBarStream(new LastBarStream() {
+            @Override
+            public void onLastBar() {
+
+                int lastIndex = barSeries.getEndIndex();
+                Bar lastBar = barSeries.getLastBar();
+                double lastPrice = livingStream.getLastPrice();
+                double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
+                double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
+
+                //Long when crossover
+                if (ma5 > ma10 && currentPosition == null) {
+                    double stopLoss = getStopLossWhenLong(barSeries, lastPrice, lastIndex);
+                    openLong(String.valueOf(lastIndex), lastPrice, lastBar, ma5, ma10, stopLoss);
+                }
+                //CloseLong
+                else if (currentPosition != null && ma5 < ma10) {
+                    closeLong(OrderRecord.Ops.CloseLong, lastPrice, lastBar, ma5, ma10);
+                }
             }
         });
-        barSeriesStream.setLivingStream(event -> {
-            if (currentPosition != null && barSeriesStream.getLastPrice() < currentPosition.stopLoss) {
-                closeLong(OrderRecord.Ops.StopLossLong, barSeriesStream);
+        livingStream.setLivingStream(event -> {
+            if (currentPosition != null && livingStream.getLastPrice() < currentPosition.stopLoss) {
+                int lastIndex = barSeries.getEndIndex();
+                Bar lastBar = barSeries.getLastBar();
+                double lastPrice = livingStream.getLastPrice();
+                double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
+                double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
+                closeLong(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
             }
         });
 
-        barSeriesStream.run();
+
     }
 
 
-    public static OrderRecord closeLong(OrderRecord.Ops ops, BarSeriesStream barSeriesStream) {
+    public static OrderRecord closeLong(OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
         OrderRecord order = currentPosition;
         order.txid(currentPosition.txid)
                 .ops(ops)
-                .point(barSeriesStream.getLastPrice())
+                .point(closePrice)
                 .stopLoss(-1)
                 .volume(currentPosition.volume)
                 .quantity(order.point * order.volume)
                 .fee(order.quantity * TAKER_FEE)
                 .profit(order.quantity - BALANCE - order.fee)
-                .balance(BALANCE += order.profit);
+                .balance(BALANCE += order.profit)
+                .bar(lastBar)
+                .ma5(ma5)
+                .ma10(ma10);
         STATS.addOrder(order);
         currentPosition = null;
         return order;
     }
 
 
-    public static OrderRecord openLong(BarSeriesStream barSeriesStream, BarSeries BAR_SERIALS, double stopLoss) {
+    public static OrderRecord openLong(String txid, double openPrice, Bar lastBar, double ma5, double ma10, double stopLoss) {
         OrderRecord order = OrderRecord.build();
-        order.txid(String.valueOf(BAR_SERIALS.getEndIndex()))
+        order.txid(txid)
                 .ops(OrderRecord.Ops.Long)
-                .point(barSeriesStream.getLastPrice())
+                .point(openPrice)
                 .stopLoss(stopLoss)
                 .volume(BALANCE / order.point)
                 .fee(BALANCE * TAKER_FEE)
                 .quantity(BALANCE - order.fee)
                 .profit(-order.fee)
-                .balance(BALANCE -= order.fee);
+                .balance(BALANCE -= order.fee)
+                .bar(lastBar)
+                .ma5(ma5)
+                .ma10(ma10);
         STATS.addOrder(order);
         currentPosition = order;
         return order;

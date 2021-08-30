@@ -17,23 +17,24 @@ import java.util.List;
 /**
  * Created by louisyuu on 2021/8/20 1:08 下午
  */
-public class BarSeriesStream {
-    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+public class BarLivingStream {
 
 
     private final BarSeries barSeries;
     private final CandlestickInterval interval;
     private final int initKLineCount;
     private final String symbol;
+
+
     private LastBarStream lastBarStream;
     private LivingStream livingStream;
     private volatile double lastPrice;
 
-    public BarSeriesStream(CandlestickInterval interval, String symbol, int initKLineCount) {
+    public BarLivingStream(CandlestickInterval interval, String symbol, int initKLineCount) {
         this(new BaseBarSeriesBuilder().build(), symbol, interval, initKLineCount);
     }
 
-    public BarSeriesStream(BarSeries barSeries, String symbol, CandlestickInterval interval, int initKLineCount) {
+    public BarLivingStream(BarSeries barSeries, String symbol, CandlestickInterval interval, int initKLineCount) {
         this.barSeries = barSeries;
         this.interval = interval;
         this.initKLineCount = initKLineCount;
@@ -47,7 +48,7 @@ public class BarSeriesStream {
 
 
     public static void main(String[] args) {
-        BarSeriesStream bar = new BarSeriesStream(CandlestickInterval.ONE_MINUTE, "BTCUSDT", 1000);
+        BarLivingStream bar = new BarLivingStream(CandlestickInterval.ONE_MINUTE, "BTCUSDT", 1000);
         bar.run();
 
     }
@@ -63,7 +64,7 @@ public class BarSeriesStream {
                     if (event.getEventTime() >= event.getCloseTime()) {
                         this.barSeries.addBar(closeZoneTime, event.getOpen(), event.getHigh(), event.getLow(), event.getClose(), event.getVolume());
                         if (lastBarStream != null) {
-                            lastBarStream.onLastBar(this.barSeries);
+                            lastBarStream.onLastBar();
                         }
                     } else {
                         this.lastPrice = Double.parseDouble(String.valueOf(event.getOpen()));
