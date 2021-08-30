@@ -23,7 +23,6 @@ public class SMAStrategy {
     public static double INITIAL_BALANCE = 10000;
     private static Record currentPosition;
     private static volatile boolean firstCrossOver;
-
     private final static Stats stats = new Stats();
 
 
@@ -71,6 +70,9 @@ public class SMAStrategy {
                 System.out.println("==> " + currentPosition.ops + ",OpenPrice:" + currentPosition.point
                         + ",StopLoss:" + currentPosition.stopLoss + ",Volume:" + currentPosition.volume
                         + "Txid:" + currentPosition.id + ",Fee:" + fee);
+
+                System.out.println(stats);
+
             }
             //CloseLong
             else if (currentPosition != null && ma5 < ma10) {
@@ -95,6 +97,8 @@ public class SMAStrategy {
                 System.out.println("==> " + "CloseLong" + ",OpenPrice:" + barSeriesStream.getLastPrice()
                         + ",StopLoss:" + "Nil" + ",Volume:" + currentPosition.volume
                         + "Txid:" + currentPosition.id + ",Fee:" + fee);
+
+                System.out.println(stats);
 
 
                 currentPosition = null;
@@ -121,6 +125,7 @@ public class SMAStrategy {
                     System.out.println("==> " + "StopLoss" + ",OpenPrice:" + barSeriesStream.getLastPrice()
                             + ",StopLoss:" + "Nil" + ",Volume:" + currentPosition.volume
                             + "Txid:" + currentPosition.id + ",Fee:" + fee);
+                    System.out.println(stats);
 
                     currentPosition = null;
                 }
