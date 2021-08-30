@@ -2,6 +2,8 @@ package bot.trade;
 
 import org.ta4j.core.Bar;
 
+import java.util.Date;
+
 /**
  * Created by louisyuu on 2021/8/30 3:30 下午
  */
@@ -16,6 +18,8 @@ public class OrderRecord {
     double quantity = 0;
     double profit = 0;
     double fee = 0;
+    Date time;
+    long timestamp;
 
     Bar bar;
     double ma5 = -1;
@@ -77,6 +81,15 @@ public class OrderRecord {
         return this;
     }
 
+    public OrderRecord time(Date time) {
+        this.time = time;
+        return this;
+    }
+
+    public OrderRecord timestamp(long timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
 
     public OrderRecord bar(Bar bar) {
         this.bar = bar;
@@ -91,6 +104,25 @@ public class OrderRecord {
     public OrderRecord ma10(double ma10) {
         this.ma10 = ma10;
         return this;
+    }
+
+
+    @Override
+    public String toString() {
+        return "==> OrderRecord{" +
+                "CurrentBalance=" + balance +
+                ", TxId='" + txid + '\'' +
+                ", Ops=" + ops +
+                ", Point=" + point +
+                ", StopLoss=" + stopLoss +
+                ", Volume=" + volume +
+                ", Quantity=" + quantity +
+                ", NetProfit=" + profit +
+                ", Fee=" + fee +
+                ", OrderBarData=" + bar +
+                ", Ma5=" + ma5 +
+                ", Ma10=" + ma10 +
+                '}';
     }
 
     enum Ops {

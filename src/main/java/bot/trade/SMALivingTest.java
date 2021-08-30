@@ -37,11 +37,13 @@ public class SMALivingTest {
         SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
         livingStream.run();
         System.out.println();
-        System.out.println("==> Started at " + DateUtil.getCurrentDateTime());
+        System.out.println("==> Started at " + DateUtil.getCurrentDateTime() + " with bar size " + barSeries.getEndIndex());
+        System.out.println("==> Start current bar :" + barSeries.getLastBar());
 
         livingStream.setLastBarStream(new LastBarStream() {
             @Override
             public void onLastBar() {
+
 
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
@@ -49,14 +51,17 @@ public class SMALivingTest {
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
 
+                System.out.println("==> Current Bar :" + lastBar);
+
+
                 //Long when crossover
                 if (ma5 > ma10 && currentPosition == null) {
                     double stopLoss = getStopLossWhenLong(barSeries, lastPrice, lastIndex);
-                    openLong(String.valueOf(lastIndex), lastPrice, lastBar, ma5, ma10, stopLoss);
+                    open(String.valueOf(lastIndex), lastPrice, lastBar, ma5, ma10, stopLoss);
                 }
                 //CloseLong
                 else if (currentPosition != null && ma5 < ma10) {
-                    closeLong(OrderRecord.Ops.CloseLong, lastPrice, lastBar, ma5, ma10);
+                    close(OrderRecord.Ops.CloseLong, lastPrice, lastBar, ma5, ma10);
                 }
             }
         });
@@ -67,7 +72,7 @@ public class SMALivingTest {
                 double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-                closeLong(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
+                close(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
             }
         });
 
@@ -75,7 +80,7 @@ public class SMALivingTest {
     }
 
 
-    public static OrderRecord closeLong(OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
+    public static OrderRecord close(OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
         OrderRecord order = currentPosition;
         order.txid(currentPosition.txid)
                 .ops(ops)
@@ -91,11 +96,13 @@ public class SMALivingTest {
                 .ma10(ma10);
         STATS.addOrder(order);
         currentPosition = null;
+
+        System.out.println("==> Close by " + ops + " in order :" + order);
         return order;
     }
 
 
-    public static OrderRecord openLong(String txid, double openPrice, Bar lastBar, double ma5, double ma10, double stopLoss) {
+    public static OrderRecord open(String txid, double openPrice, Bar lastBar, double ma5, double ma10, double stopLoss) {
         OrderRecord order = OrderRecord.build();
         order.txid(txid)
                 .ops(OrderRecord.Ops.Long)
@@ -103,7 +110,7 @@ public class SMALivingTest {
                 .stopLoss(stopLoss)
                 .volume(BALANCE / order.point)
                 .fee(BALANCE * TAKER_FEE)
-                .quantity(BALANCE - order.fee)
+                .quantity(BALANCE)
                 .profit(-order.fee)
                 .balance(BALANCE -= order.fee)
                 .bar(lastBar)
@@ -111,6 +118,7 @@ public class SMALivingTest {
                 .ma10(ma10);
         STATS.addOrder(order);
         currentPosition = order;
+        System.out.println("==> Open by " + order.ops + " in order :" + order);
         return order;
     }
 

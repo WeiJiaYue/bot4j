@@ -35,18 +35,7 @@ public class Stats {
     @Override
     public String toString() {
         return "Stats{" +
-                ", profit=" + profit +
-                ", fee=" + fee +
-                ", returnFee=" + returnFee +
-                ", maxProfit=" + maxProfit +
-                ", maxLoss=" + maxLoss +
-                ", volume=" + volume +
-                ", quantity=" + quantity +
-                ", openCount=" + openCount +
-                ", closeCount=" + closeCount +
-                ", stopLossCount=" + stopLossCount +
-                ", successCount=" + successCount +
-                ", lossCount=" + lossCount +
+                "orders=" + orders +
                 '}';
     }
 }
