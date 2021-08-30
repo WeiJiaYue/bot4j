@@ -25,10 +25,8 @@ public class BarSeriesStream {
     private final CandlestickInterval interval;
     private final int initKLineCount;
     private final String symbol;
-
     private LastBarStream lastBarStream;
     private LivingStream livingStream;
-
     private volatile double lastPrice;
 
     public BarSeriesStream(CandlestickInterval interval, String symbol, int initKLineCount) {

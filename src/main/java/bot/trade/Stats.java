@@ -1,12 +1,14 @@
 package bot.trade;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by louisyuu on 2021/8/27 3:22 下午
  */
 public class Stats {
     double RETURN_FEE_RATE = 0.2;
 
-    double balance = 10000;
     double profit = 0;
     double fee = 0;
     double returnFee = fee * RETURN_FEE_RATE;
@@ -23,10 +25,16 @@ public class Stats {
     int lossCount = 0;
 
 
+    List<OrderRecord> orders = new ArrayList<>();
+
+    public Stats addOrder(OrderRecord order) {
+        this.orders.add(order);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Stats{" +
-                "balance=" + balance +
                 ", profit=" + profit +
                 ", fee=" + fee +
                 ", returnFee=" + returnFee +
