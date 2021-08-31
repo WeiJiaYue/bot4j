@@ -10,7 +10,18 @@ public class GetSymbolPriceTicker {
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
                 options);
-        System.out.println(syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+
+        System.out.println(System.currentTimeMillis() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+
+//        for (int i = 0; i < 100; i++) {
+//
+//
+//            try {
+//                Thread.sleep(500L);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
         // System.out.println(syncRequestClient.getSymbolPriceTicker(null));
     }
 }

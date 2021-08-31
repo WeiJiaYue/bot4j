@@ -6,6 +6,7 @@ import com.binance.client.SubscriptionClient;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.Candlestick;
+import com.binance.client.model.market.SymbolPrice;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 
@@ -58,6 +59,12 @@ public class BarLivingStream {
         client.subscribeCandlestickEvent(this.symbol.toLowerCase(),
                 this.interval,
                 event -> {
+                    List<SymbolPrice> btcusdt = SyncRequestClient.create().getSymbolPriceTicker("BTCUSDT");
+                    this.lastPrice = Double.parseDouble(String.valueOf(btcusdt.get(0).getPrice()));
+                    if (livingStream != null) {
+                        livingStream.onLiving(event);
+                    }
+
                     Date closeDateTime = new Date(event.getCloseTime());
                     ZonedDateTime closeZoneTime = ZonedDateTime.ofInstant(closeDateTime.toInstant(), ZoneId.systemDefault());
                     //最新的一条k线还没有出来完整，先不放入BarSerial。等待周期内的k先出完毕再放入BarSerials
@@ -65,11 +72,6 @@ public class BarLivingStream {
                         this.barSeries.addBar(closeZoneTime, event.getOpen(), event.getHigh(), event.getLow(), event.getClose(), event.getVolume());
                         if (lastBarStream != null) {
                             lastBarStream.onLastBar();
-                        }
-                    } else {
-                        this.lastPrice = Double.parseDouble(String.valueOf(event.getOpen()));
-                        if (livingStream != null) {
-                            livingStream.onLiving(event);
                         }
                     }
                 },

@@ -18,7 +18,7 @@ public class OrderRecord {
     double quantity = 0;
     double profit = 0;
     double fee = 0;
-    Date time;
+    String time;
     long timestamp;
 
     Bar bar;
@@ -81,7 +81,7 @@ public class OrderRecord {
         return this;
     }
 
-    public OrderRecord time(Date time) {
+    public OrderRecord time(String time) {
         this.time = time;
         return this;
     }
@@ -110,18 +110,20 @@ public class OrderRecord {
     @Override
     public String toString() {
         return "==> OrderRecord{" +
-                "CurrentBalance=" + balance +
-                ", TxId='" + txid + '\'' +
-                ", Ops=" + ops +
-                ", Point=" + point +
-                ", StopLoss=" + stopLoss +
-                ", Volume=" + volume +
-                ", Quantity=" + quantity +
-                ", NetProfit=" + profit +
-                ", Fee=" + fee +
-                ", OrderBarData=" + bar +
-                ", Ma5=" + ma5 +
-                ", Ma10=" + ma10 +
+                "balance=" + balance +
+                ", txid='" + txid + '\'' +
+                ", ops=" + ops +
+                ", point=" + point +
+                ", stopLoss=" + stopLoss +
+                ", volume=" + volume +
+                ", quantity=" + quantity +
+                ", profit=" + profit +
+                ", fee=" + fee +
+                ", time='" + time + '\'' +
+                ", timestamp=" + timestamp +
+                ", ma5=" + ma5 +
+                ", ma10=" + ma10 +
+                " \n==> OrderedBar=" + bar +
                 '}';
     }
 
@@ -140,4 +142,60 @@ public class OrderRecord {
         StopLossShort
     }
 
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public String getTxid() {
+        return txid;
+    }
+
+    public Ops getOps() {
+        return ops;
+    }
+
+    public double getPoint() {
+        return point;
+    }
+
+    public double getStopLoss() {
+        return stopLoss;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public double getProfit() {
+        return profit;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public Bar getBar() {
+        return bar;
+    }
+
+    public double getMa5() {
+        return ma5;
+    }
+
+    public double getMa10() {
+        return ma10;
+    }
 }
