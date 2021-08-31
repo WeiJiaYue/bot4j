@@ -8,6 +8,9 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 public class SMALivingTest {
 
     //Custom params
@@ -18,16 +21,20 @@ public class SMALivingTest {
     public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
     public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
     public final static int HISTORY_KLINE_COUNT = 100;
-//    public static double BALANCE = 10000;
+    //    public static double BALANCE = 10000;
     private final static Stats STATS = new Stats();
 
     private static OrderRecord currentPosition;
 
     public static void main(String[] args) throws Exception {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println();
-            System.out.println(STATS);
-        }));
+
+//        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                STATS.stats("Timer");
+//            }
+//        }, 10,10, TimeUnit.SECONDS);
+
         BarLivingStream livingStream = new BarLivingStream(INTERVAL, SYMBOL_FOR_TRADING, HISTORY_KLINE_COUNT);
 
         BarSeries barSeries = livingStream.getBarSeries();
@@ -36,6 +43,9 @@ public class SMALivingTest {
         SMAIndicator sma5Indicator = new SMAIndicator(closePrice, 5);
         SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
         livingStream.run();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new StatsRunnable("Shutdown",STATS,barSeries)));
+
         System.out.println();
         System.out.println(System.currentTimeMillis() + "==> Started at " + DateUtil.getCurrentDateTime() + " with bar size " + barSeries.getEndIndex());
         System.out.println(System.currentTimeMillis() + "==> Start current bar :" + barSeries.getLastBar());
@@ -45,19 +55,17 @@ public class SMALivingTest {
             public void onLastBar() {
 
 
-
-
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
                 double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
 
-                System.out.println(System.currentTimeMillis() + "==> Current Bar :" + lastBar);
-                System.out.println(System.currentTimeMillis() + "==> Last Price :" + lastPrice);
+//                System.out.println(System.currentTimeMillis() + "==> Current Bar :" + lastBar);
+//                System.out.println(System.currentTimeMillis() + "==> Last Price :" + lastPrice);
 
 
-                if(lastIndex<WARMUP_COUNT){
+                if (lastIndex < WARMUP_COUNT) {
                     return;
                 }
 

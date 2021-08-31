@@ -27,6 +27,10 @@ public class ExcelTable {
      */
     private final List<Map<String, Object>> rows;
 
+    public ExcelTable() {
+        this.columns = new ArrayList<>();
+        this.rows = new ArrayList<>();
+    }
 
     public ExcelTable(List<String> columns, List<Map<String, Object>> rows) {
         this.columns = columns;

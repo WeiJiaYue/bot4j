@@ -44,6 +44,13 @@ public abstract class ExcelProcessor {
     protected String newSheetName = "ExcelDao";
 
 
+    public ExcelProcessor(String filepath) {
+        if (filepath.lastIndexOf("/") == -1) {
+            throw new RuntimeException("File path should end with forward slash [/]");
+        }
+        this.filepath = filepath;
+    }
+
     public ExcelProcessor(String filepath, String filename) {
         if (filepath.lastIndexOf("/") == -1) {
             throw new RuntimeException("File path should end with forward slash [/]");
@@ -61,7 +68,7 @@ public abstract class ExcelProcessor {
      * <p>
      * Convert excel to java object ExcelTable from disk
      */
-    private ExcelTable getExcelTable() {
+    protected ExcelTable getExcelTable() {
         try {
             File file = new File(filepath + filename);
             return Helpers.excelToTable(new FileInputStream(file), sheetNo);
@@ -85,7 +92,7 @@ public abstract class ExcelProcessor {
      *
      * Convert java object ExcelTable to excel file to disk
      */
-    private void produce(ExcelTable table) {
+    protected void produce(ExcelTable table) {
         Workbook workbook = Helpers.tableToExcel(table, newFileSuffix, newSheetName);
         try {
             File file = new File(filepath + newFilename);
