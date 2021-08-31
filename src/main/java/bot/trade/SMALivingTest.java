@@ -52,7 +52,7 @@ public class SMALivingTest {
                 double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-                print("Taker price " + lastPrice + " at latest kline " + lastBar);
+//                print("Taker price " + lastPrice + " at latest kline " + lastBar);
                 if (lastIndex < WARMUP_COUNT) {
                     return;
                 }
@@ -91,9 +91,8 @@ public class SMALivingTest {
                 .volume(currentPosition.volume)
                 .quantity(order.point * order.volume)
                 .fee(order.quantity * TAKER_FEE)
-                .profit(order.quantity - ORDER_TRACE.getBalance() - order.fee);
-        ORDER_TRACE.balanceChange(order.profit);
-        order.balance(ORDER_TRACE.getBalance())
+                .profit(order.quantity - ORDER_TRACE.balance - order.fee)
+                .balance(ORDER_TRACE.balance += order.profit)
                 .bar(lastBar)
                 .ma5(ma5)
                 .ma10(ma10)
@@ -112,11 +111,11 @@ public class SMALivingTest {
                 .ops(OrderRecord.Ops.Long)
                 .point(openPrice)
                 .stopLoss(stopLoss)
-                .volume(ORDER_TRACE.BALANCE / order.point)
-                .fee(ORDER_TRACE.BALANCE * TAKER_FEE)
-                .quantity(ORDER_TRACE.BALANCE)
+                .volume(ORDER_TRACE.balance / order.point)
+                .fee(ORDER_TRACE.balance * TAKER_FEE)
+                .quantity(ORDER_TRACE.balance)
                 .profit(-order.fee)
-                .balance(ORDER_TRACE.BALANCE -= order.fee)
+                .balance(ORDER_TRACE.balance -= order.fee)
                 .bar(lastBar)
                 .ma5(ma5)
                 .ma10(ma10)

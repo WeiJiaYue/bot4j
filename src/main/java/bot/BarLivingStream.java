@@ -15,6 +15,9 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
+import static bot.DateUtil.print;
+import static bot.DateUtil.printHighlight;
+
 /**
  * Created by louisyuu on 2021/8/20 1:08 下午
  */
@@ -76,8 +79,8 @@ public class BarLivingStream {
                     }
                 },
                 exception -> {
-                    System.out.println("==> Websocket error");
-                    exception.printStackTrace();
+                    printHighlight("Websocket error");
+//                    exception.printStackTrace();
                 });
     }
 
@@ -85,7 +88,7 @@ public class BarLivingStream {
     private void initialHistoryKLines() {
         List<Candlestick> candlesticks = getCandlestick();
         System.out.println();
-        System.out.println("==> Start initial kline");
+        print("KLine bar initialization is starting ");
         for (int i = 0; i < candlesticks.size(); i++) {
             Candlestick candlestick = candlesticks.get(i);
             Date closeDateTime = new Date(candlestick.getCloseTime());

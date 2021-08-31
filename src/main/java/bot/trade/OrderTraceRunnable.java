@@ -8,25 +8,37 @@ import org.ta4j.core.BarSeries;
 
 import java.util.Map;
 
+import static bot.DateUtil.print;
+
+
 /**
  * Created by louisyuu on 2021/8/31 2:59 下午
  */
 public class OrderTraceRunnable implements Runnable {
 
     private final String caller;
-    private final OrderTrace stats;
+    private final OrderTrace orderTrace;
     private final BarSeries barSeries;
 
 
-    public OrderTraceRunnable(String caller, OrderTrace stats, BarSeries barSeries) {
+    public OrderTraceRunnable(String caller, OrderTrace orderTrace, BarSeries barSeries) {
         this.caller = caller;
-        this.stats = stats;
+        this.orderTrace = orderTrace;
         this.barSeries = barSeries;
     }
 
     @Override
     public void run() {
-        System.out.println("Start run shutdown");
+        print("Enter " + caller);
+        OrderTrace snapshot = orderTrace.clone();
+        if (!(snapshot.orders.isEmpty())) {
+            generateExcel(snapshot);
+        }
+        snapshot.snapshotForCurrentOrderTrace(caller);
+    }
+
+
+    public void generateExcel(OrderTrace snapshot) {
         new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
             @Override
             protected ExcelTable getExcelTable() {
@@ -64,7 +76,6 @@ public class OrderTraceRunnable implements Runnable {
                     row.put("C", String.valueOf(bar.getClosePrice()));
                     row.put("L", String.valueOf(bar.getLowPrice()));
                     row.put("V", String.valueOf(bar.getVolume()));
-                    OrderTrace snapshot = stats.clone();
                     OrderRecord order = snapshot.getOrderByDate(bar.getEndTime());
                     if (order != null) {
                         row.put("MA5", String.valueOf(order.getMa5()));
@@ -84,9 +95,5 @@ public class OrderTraceRunnable implements Runnable {
                 }
             }
         }.process();
-
-
-        stats.snapshotForCurrentOrderTrace(caller);
-
     }
 }

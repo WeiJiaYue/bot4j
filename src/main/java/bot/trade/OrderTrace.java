@@ -1,6 +1,7 @@
 package bot.trade;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -8,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static bot.DateUtil.print;
+
 /**
  * Created by louisyuu on 2021/8/27 3:22 下午
  */
 public class OrderTrace implements Cloneable {
-    private volatile double balance;
+    double balance;
 
     public OrderTrace(double balance) {
         this.balance = balance;
@@ -52,19 +55,21 @@ public class OrderTrace implements Cloneable {
 
 
     public void snapshotForCurrentOrderTrace(String caller) {
-        System.out.println("Snapshot object :" + this.cloned);
         OrderTrace snapshot = this;
         if (!this.cloned) {
             snapshot = clone();
+//            print("Use clone");
+        }else{
+//            print("Non-Use clone");
         }
-        if (snapshot == null) {
-            System.out.println("Snapshot failed");
-            return;
-        }
+//        print("This " + this.hashCode());
+//        print("Snapshot " + snapshot.hashCode());
+
         if (snapshot.orders.isEmpty()) {
-            System.out.println(caller + "==> No orders");
+            print("No orders");
             return;
         }
+
         Map<String, List<OrderRecord>> orderPairMap = snapshot.orders.stream().collect(Collectors.groupingBy(OrderRecord::getTxid));
 
         for (Map.Entry<String, List<OrderRecord>> entry : orderPairMap.entrySet()) {
@@ -94,14 +99,14 @@ public class OrderTrace implements Cloneable {
             }
         }
 
-        System.out.println(caller + "==> " + snapshot);
+        print("Current snapshot order overview " + snapshot+" by "+caller);
     }
 
 
     @Override
     protected OrderTrace clone() {
-        String json = JSON.toJSONString(this);
-        OrderTrace stats = JSON.parseObject(json, OrderTrace.class);
+        String json = JSONObject.toJSONString(this);
+        OrderTrace stats = JSONObject.parseObject(json, OrderTrace.class);
         stats.cloned = true;
         return stats;
     }
@@ -227,7 +232,8 @@ public class OrderTrace implements Cloneable {
     @Override
     public String toString() {
         return "Stats{" +
-                "Balance=" + balance +
+                "HashCode=" + this.hashCode() +
+                ", Balance=" + balance +
                 ", profit=" + profit +
                 ", fee=" + fee +
                 ", returnFee=" + returnFee +
