@@ -36,7 +36,7 @@ public abstract class ExcelProcessor {
 
     //Default new file name is ExcelDao_uuid.xls
     //Use setNewFileName() to override if required
-    protected String newFilename = "ExcelDao_" + UUID.randomUUID() + newFileSuffix.name();
+    protected String newFilename = "ExcelDao_" + UUID.randomUUID() +"."+ newFileSuffix.name();
 
 
     //Default sheet name is ExcelDao

@@ -63,7 +63,7 @@ public class Stats implements Cloneable {
         }
 
         if (snapshot.orders.isEmpty()) {
-            System.out.println("==> No orders");
+            System.out.println(caller + "==> No orders");
             return;
         }
         Map<String, List<OrderRecord>> orderPairMap = snapshot.orders.stream().collect(Collectors.groupingBy(OrderRecord::getTxid));

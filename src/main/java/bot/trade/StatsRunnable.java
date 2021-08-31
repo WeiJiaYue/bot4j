@@ -27,7 +27,6 @@ public class StatsRunnable implements Runnable {
 
     @Override
     public void run() {
-        stats.stats(caller);
         new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
             @Override
             protected ExcelTable getExcelTable() {
@@ -48,7 +47,8 @@ public class StatsRunnable implements Runnable {
                         .addColumn("TV")
                         .addColumn("Quantity")
                         .addColumn("Fee")
-                        .addColumn("Profit");
+                        .addColumn("Profit")
+                        .addColumn("OrderDetail");
 
                 return table;
             }
@@ -78,11 +78,15 @@ public class StatsRunnable implements Runnable {
                         row.put("Quantity", String.valueOf(order.getQuantity()));
                         row.put("Fee", String.valueOf(order.getFee()));
                         row.put("Profit", String.valueOf(order.getProfit()));
+                        row.put("OrderDetail", order.toString());
                     }
                     table.addRow(row);
                 }
             }
         }.process();
+
+
+        stats.stats(caller);
 
     }
 }
