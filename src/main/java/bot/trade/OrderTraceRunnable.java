@@ -6,20 +6,19 @@ import bot.excel.ExcelTable;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by louisyuu on 2021/8/31 2:59 下午
  */
-public class StatsRunnable implements Runnable {
+public class OrderTraceRunnable implements Runnable {
 
     private final String caller;
-    private final Stats stats;
+    private final OrderTrace stats;
     private final BarSeries barSeries;
 
 
-    public StatsRunnable(String caller, Stats stats, BarSeries barSeries) {
+    public OrderTraceRunnable(String caller, OrderTrace stats, BarSeries barSeries) {
         this.caller = caller;
         this.stats = stats;
         this.barSeries = barSeries;
@@ -27,6 +26,7 @@ public class StatsRunnable implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Start run shutdown");
         new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
             @Override
             protected ExcelTable getExcelTable() {
@@ -64,7 +64,7 @@ public class StatsRunnable implements Runnable {
                     row.put("C", String.valueOf(bar.getClosePrice()));
                     row.put("L", String.valueOf(bar.getLowPrice()));
                     row.put("V", String.valueOf(bar.getVolume()));
-                    Stats snapshot = stats.clone();
+                    OrderTrace snapshot = stats.clone();
                     OrderRecord order = snapshot.getOrderByDate(bar.getEndTime());
                     if (order != null) {
                         row.put("MA5", String.valueOf(order.getMa5()));
@@ -86,7 +86,7 @@ public class StatsRunnable implements Runnable {
         }.process();
 
 
-        stats.stats(caller);
+        stats.snapshotForCurrentOrderTrace(caller);
 
     }
 }

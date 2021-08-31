@@ -11,6 +11,9 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static bot.DateUtil.print;
+import static bot.DateUtil.printHighlight;
+
 public class SMALivingTest {
 
     //Custom params
@@ -21,54 +24,38 @@ public class SMALivingTest {
     public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
     public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
     public final static int HISTORY_KLINE_COUNT = 100;
-    //    public static double BALANCE = 10000;
-    private final static Stats STATS = new Stats();
+    public final static double INIT_BALANCE = 100;
+    private final static OrderTrace ORDER_TRACE = new OrderTrace(INIT_BALANCE);
 
     private static OrderRecord currentPosition;
 
     public static void main(String[] args) throws Exception {
-
-//        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
-//            @Override
-//            public void run() {
-//                STATS.stats("Timer");
-//            }
-//        }, 10,10, TimeUnit.SECONDS);
-
         BarLivingStream livingStream = new BarLivingStream(INTERVAL, SYMBOL_FOR_TRADING, HISTORY_KLINE_COUNT);
-
         BarSeries barSeries = livingStream.getBarSeries();
+        //Enable monitors
+        enableScheduledOrderTraceMonitor(barSeries);
+        enableShutdownOrderTraceMonitor(barSeries);
 
+        //Indicator
         ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
         SMAIndicator sma5Indicator = new SMAIndicator(closePrice, 5);
         SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
+        //Run
         livingStream.run();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(new StatsRunnable("Shutdown",STATS,barSeries)));
-
-        System.out.println();
-        System.out.println(System.currentTimeMillis() + "==> Started at " + DateUtil.getCurrentDateTime() + " with bar size " + barSeries.getEndIndex());
-        System.out.println(System.currentTimeMillis() + "==> Start current bar :" + barSeries.getLastBar());
-
+        print("Living trading started with bar size " + barSeries.getEndIndex() + " at last bar " + barSeries.getLastBar());
+        //Living trade handler
         livingStream.setLastBarStream(new LastBarStream() {
             @Override
             public void onLastBar() {
-
-
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
                 double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-
-//                System.out.println(System.currentTimeMillis() + "==> Current Bar :" + lastBar);
-//                System.out.println(System.currentTimeMillis() + "==> Last Price :" + lastPrice);
-
-
+                print("Taker price " + lastPrice + " at latest kline " + lastBar);
                 if (lastIndex < WARMUP_COUNT) {
                     return;
                 }
-
                 //Long when crossover
                 if (ma5 > ma10 && currentPosition == null) {
                     double stopLoss = getStopLossWhenLong(barSeries, lastPrice, lastIndex);
@@ -82,14 +69,9 @@ public class SMALivingTest {
         });
         livingStream.setLivingStream(event -> {
             double lastPrice = livingStream.getLastPrice();
-
-//            System.out.println(System.currentTimeMillis() + "==> Real Time Last Price :" + lastPrice);
-
-
             if (currentPosition != null && livingStream.getLastPrice() < currentPosition.stopLoss) {
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
-//                double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
                 close(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
@@ -109,17 +91,16 @@ public class SMALivingTest {
                 .volume(currentPosition.volume)
                 .quantity(order.point * order.volume)
                 .fee(order.quantity * TAKER_FEE)
-                .profit(order.quantity - Stats.BALANCE - order.fee)
-                .balance(Stats.BALANCE += order.profit)
+                .profit(order.quantity - ORDER_TRACE.BALANCE - order.fee)
+                .balance(ORDER_TRACE.BALANCE += order.profit)
                 .bar(lastBar)
                 .ma5(ma5)
                 .ma10(ma10)
                 .time(DateUtil.getCurrentDateTime())
                 .timestamp(System.currentTimeMillis());
-        STATS.addOrder(order);
+        ORDER_TRACE.addOrder(order);
         currentPosition = null;
-
-        System.err.println(System.currentTimeMillis() + " ==> " + order.ops + " order :\n" + order);
+        printHighlight(order.ops+" order :"+order);
         return order;
     }
 
@@ -130,19 +111,19 @@ public class SMALivingTest {
                 .ops(OrderRecord.Ops.Long)
                 .point(openPrice)
                 .stopLoss(stopLoss)
-                .volume(Stats.BALANCE / order.point)
-                .fee(Stats.BALANCE * TAKER_FEE)
-                .quantity(Stats.BALANCE)
+                .volume(ORDER_TRACE.BALANCE / order.point)
+                .fee(ORDER_TRACE.BALANCE * TAKER_FEE)
+                .quantity(ORDER_TRACE.BALANCE)
                 .profit(-order.fee)
-                .balance(Stats.BALANCE -= order.fee)
+                .balance(ORDER_TRACE.BALANCE -= order.fee)
                 .bar(lastBar)
                 .ma5(ma5)
                 .ma10(ma10)
                 .time(DateUtil.getCurrentDateTime())
                 .timestamp(System.currentTimeMillis());
-        STATS.addOrder(order);
+        ORDER_TRACE.addOrder(order);
         currentPosition = order;
-        System.err.println(System.currentTimeMillis() + " ==> " + order.ops + " order :\n" + order);
+        printHighlight(order.ops+" order :"+order);
         return order;
     }
 
@@ -162,6 +143,19 @@ public class SMALivingTest {
             stopLoss = Math.min(stopLoss, point * (1 - STOP_LOSS_PERCENTAGE));
         }
         return stopLoss;
+    }
+
+
+    public static void enableShutdownOrderTraceMonitor(BarSeries barSeries) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new OrderTraceRunnable("ShutdownMonitor", ORDER_TRACE, barSeries)));
+    }
+
+    public static void enableScheduledOrderTraceMonitor(BarSeries barSeries) {
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
+                new OrderTraceRunnable("ScheduledMonitor", ORDER_TRACE, barSeries),
+                10,
+                10,
+                TimeUnit.SECONDS);
     }
 
 

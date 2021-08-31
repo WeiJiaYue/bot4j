@@ -11,10 +11,14 @@ import java.util.stream.Collectors;
 /**
  * Created by louisyuu on 2021/8/27 3:22 下午
  */
-public class Stats implements Cloneable {
-    public static volatile double BALANCE = 100;
-    double RETURN_FEE_RATE = 0.2;
+public class OrderTrace implements Cloneable {
+    public volatile double BALANCE;
 
+    public OrderTrace(double BALANCE) {
+        this.BALANCE = BALANCE;
+    }
+
+    double RETURN_FEE_RATE = 0.2;
     double profit = 0;
     double fee = 0;
     double returnFee = 0;
@@ -29,16 +33,11 @@ public class Stats implements Cloneable {
     int stopLossCount = 0;
     int succeedCount = 0;
     int failedCount = 0;
-
-
     boolean cloned;
-
-
     List<OrderRecord> orders = new ArrayList<>();
 
-    public Stats addOrder(OrderRecord order) {
+    public void addOrder(OrderRecord order) {
         this.orders.add(order);
-        return this;
     }
 
 
@@ -52,16 +51,16 @@ public class Stats implements Cloneable {
     }
 
 
-    public void stats(String caller) {
-
-
-        Stats snapshot = clone();
-
+    public void snapshotForCurrentOrderTrace(String caller) {
+        System.out.println("Snapshot object :" + this.cloned);
+        OrderTrace snapshot = this;
+        if (!this.cloned) {
+            snapshot = clone();
+        }
         if (snapshot == null) {
-            System.out.println("Snapshot is null");
+            System.out.println("Snapshot failed");
             return;
         }
-
         if (snapshot.orders.isEmpty()) {
             System.out.println(caller + "==> No orders");
             return;
@@ -100,31 +99,10 @@ public class Stats implements Cloneable {
 
 
     @Override
-    public String toString() {
-        return "Stats{" +
-                "Balance=" + BALANCE +
-                ", profit=" + profit +
-                ", fee=" + fee +
-                ", returnFee=" + returnFee +
-                ", maxProfit=" + maxProfit +
-                ", maxLoss=" + maxLoss +
-                ", volume=" + volume +
-                ", quantity=" + quantity +
-                ", openCount=" + openCount +
-                ", closeCount=" + closeCount +
-                ", stopLossCount=" + stopLossCount +
-                ", succeedCount=" + succeedCount +
-                ", failedCount=" + failedCount +
-                ", succeedRatio=" + ((succeedCount * 1.00) / (openCount * 1.00)) * 100 + "%" +
-                "}";
-    }
-
-    @Override
-    protected Stats clone() {
+    protected OrderTrace clone() {
         String json = JSON.toJSONString(this);
-        Stats stats = JSON.parseObject(json, Stats.class);
+        OrderTrace stats = JSON.parseObject(json, OrderTrace.class);
         stats.cloned = true;
-
         return stats;
     }
 
@@ -231,5 +209,26 @@ public class Stats implements Cloneable {
 
     public void setOrders(List<OrderRecord> orders) {
         this.orders = orders;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Stats{" +
+                "Balance=" + BALANCE +
+                ", profit=" + profit +
+                ", fee=" + fee +
+                ", returnFee=" + returnFee +
+                ", maxProfit=" + maxProfit +
+                ", maxLoss=" + maxLoss +
+                ", volume=" + volume +
+                ", quantity=" + quantity +
+                ", openCount=" + openCount +
+                ", closeCount=" + closeCount +
+                ", stopLossCount=" + stopLossCount +
+                ", succeedCount=" + succeedCount +
+                ", failedCount=" + failedCount +
+                ", succeedRatio=" + ((succeedCount * 1.00) / (openCount * 1.00)) * 100 + "%" +
+                "}";
     }
 }
