@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  * Created by louisyuu on 2021/8/27 3:22 下午
  */
 public class OrderTrace implements Cloneable {
-    public volatile double BALANCE;
+    private volatile double balance;
 
-    public OrderTrace(double BALANCE) {
-        this.BALANCE = BALANCE;
+    public OrderTrace(double balance) {
+        this.balance = balance;
     }
 
     double RETURN_FEE_RATE = 0.2;
@@ -104,6 +104,18 @@ public class OrderTrace implements Cloneable {
         OrderTrace stats = JSON.parseObject(json, OrderTrace.class);
         stats.cloned = true;
         return stats;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public synchronized void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public synchronized void balanceChange(double amount) {
+        this.balance += amount;
     }
 
 
@@ -215,7 +227,7 @@ public class OrderTrace implements Cloneable {
     @Override
     public String toString() {
         return "Stats{" +
-                "Balance=" + BALANCE +
+                "Balance=" + balance +
                 ", profit=" + profit +
                 ", fee=" + fee +
                 ", returnFee=" + returnFee +

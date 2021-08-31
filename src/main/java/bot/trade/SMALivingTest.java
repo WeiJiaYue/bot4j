@@ -91,8 +91,9 @@ public class SMALivingTest {
                 .volume(currentPosition.volume)
                 .quantity(order.point * order.volume)
                 .fee(order.quantity * TAKER_FEE)
-                .profit(order.quantity - ORDER_TRACE.BALANCE - order.fee)
-                .balance(ORDER_TRACE.BALANCE += order.profit)
+                .profit(order.quantity - ORDER_TRACE.getBalance() - order.fee);
+        ORDER_TRACE.balanceChange(order.profit);
+        order.balance(ORDER_TRACE.getBalance())
                 .bar(lastBar)
                 .ma5(ma5)
                 .ma10(ma10)
@@ -100,7 +101,7 @@ public class SMALivingTest {
                 .timestamp(System.currentTimeMillis());
         ORDER_TRACE.addOrder(order);
         currentPosition = null;
-        printHighlight(order.ops+" order :"+order);
+        printHighlight(order.ops + " order :" + order);
         return order;
     }
 
@@ -123,7 +124,7 @@ public class SMALivingTest {
                 .timestamp(System.currentTimeMillis());
         ORDER_TRACE.addOrder(order);
         currentPosition = order;
-        printHighlight(order.ops+" order :"+order);
+        printHighlight(order.ops + " order :" + order);
         return order;
     }
 
