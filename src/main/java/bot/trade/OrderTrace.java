@@ -336,6 +336,6 @@ public class OrderTrace implements Cloneable {
                 ", SucceedCount=" + succeedCount + "\n" +
                 ", FailedCount=" + failedCount + "\n" +
                 ", SucceedRatio=" + ((succeedCount * 1.00) / (openCount * 1.00)) * 100 + "%" + "\n" +
-                "}";
+                "}\n";
     }
 }
