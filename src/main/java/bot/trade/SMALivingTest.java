@@ -40,6 +40,8 @@ public class SMALivingTest {
         ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
         SMAIndicator sma5Indicator = new SMAIndicator(closePrice, 5);
         SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
+        livingStream.setSma5Indicator(sma5Indicator);
+        livingStream.setSma10Indicator(sma10Indicator);
         //Run
         livingStream.run();
         print("Living trading started with bar size " + barSeries.getEndIndex());
@@ -50,38 +52,40 @@ public class SMALivingTest {
             public void onLastBar() {
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
-                double lastPrice = livingStream.getLastPrice();
+//                double lastPrice = livingStream.getLastPrice();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-//                print("Taker price " + lastPrice + " at latest kline " + lastBar);
                 print("Latest bar " + lastBar);
                 if (lastIndex < WARMUP_COUNT) {
                     return;
                 }
                 //Long when crossover
                 if (ma5 > ma10 && currentPosition == null) {
-                    double stopLoss = getStopLossWhenLong(barSeries, lastPrice, lastIndex);
-                    open(String.valueOf(lastIndex), lastPrice, lastBar, ma5, ma10, stopLoss);
+                    double longMarketPrice = GetOrderBook.getLongMarketPrice(SYMBOL_FOR_TRADING);
+                    double stopLoss = getStopLossWhenLong(barSeries, longMarketPrice, lastIndex);
+                    open(String.valueOf(lastIndex), longMarketPrice, lastBar, ma5, ma10, stopLoss);
                 }
                 //CloseLong
                 else if (currentPosition != null && ma5 < ma10) {
-                    close(OrderRecord.Ops.CloseLong, lastPrice, lastBar, ma5, ma10);
+                    double shortMarketPrice = GetOrderBook.getShortMarketPrice(SYMBOL_FOR_TRADING);
+                    close(OrderRecord.Ops.CloseLong, shortMarketPrice, lastBar, ma5, ma10);
                 }
             }
         });
         livingStream.setLivingStream(event -> {
             double lastPrice = livingStream.getLastPrice();
-            if (currentPosition != null && livingStream.getLastPrice() < currentPosition.stopLoss) {
+            if (currentPosition != null && lastPrice < currentPosition.stopLoss) {
+                double shortMarketPrice = GetOrderBook.getShortMarketPrice(SYMBOL_FOR_TRADING);
                 int lastIndex = barSeries.getEndIndex();
                 Bar lastBar = barSeries.getLastBar();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-                close(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
+                close(OrderRecord.Ops.StopLossLong, shortMarketPrice, lastBar, ma5, ma10);
             }
         });
         //Enable monitors
-        enableShutdownOrderTraceMonitor(barSeries);
-        enableCLIMonitor(barSeries);
+        enableShutdownOrderTraceMonitor(livingStream, barSeries);
+        enableCLIMonitor(livingStream, barSeries);
 
     }
 
@@ -150,20 +154,21 @@ public class SMALivingTest {
     }
 
 
-    public static void enableShutdownOrderTraceMonitor(BarSeries barSeries) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new OrderTraceRunnable("ShutdownMonitor", ORDER_TRACE, barSeries, true)));
+    public static void enableShutdownOrderTraceMonitor(BarLivingStream livingStream, BarSeries barSeries) {
+        Runtime.getRuntime().addShutdownHook(new Thread(
+                new OrderTraceRunnable("ShutdownMonitor", ORDER_TRACE, livingStream, barSeries, true)));
     }
 
-    public static void enableScheduledOrderTraceMonitor(BarSeries barSeries) {
+    public static void enableScheduledOrderTraceMonitor(BarLivingStream livingStream, BarSeries barSeries) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
-                new OrderTraceRunnable("ScheduledMonitor", ORDER_TRACE, barSeries, false),
+                new OrderTraceRunnable("ScheduledMonitor", ORDER_TRACE, livingStream, barSeries, false),
                 10,
                 10,
                 TimeUnit.SECONDS);
     }
 
 
-    public static void enableCLIMonitor(BarSeries barSeries) {
+    public static void enableCLIMonitor(BarLivingStream livingStream, BarSeries barSeries) {
         Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
         while (scan.hasNextLine()) {
             try {
@@ -178,13 +183,13 @@ public class SMALivingTest {
                     System.err.println("PeekSize");
                     System.err.println("PeekOrders");
                 } else if ("Snapshot".equalsIgnoreCase(instruction)) {
-                    new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, false).run();
+                    new Thread(new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, livingStream, barSeries, false)).start();
                 } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
-                    new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, true).run();
+                    new Thread(new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, livingStream, barSeries, true)).start();
                 } else if ("PeekSize".equalsIgnoreCase(instruction)) {
-                    printHighlight("Order size :" + ORDER_TRACE.getOrders().size());
+                    printHighlight("Current trading order size : :" + ORDER_TRACE.getOrders().size());
                 } else if ("PeekOrders".equalsIgnoreCase(instruction)) {
-                    printHighlight("Orders :" + JSON.toJSONString(ORDER_TRACE.getOrders()));
+                    printHighlight("Current trading orders :" + JSON.toJSONString(ORDER_TRACE.getOrders()));
                 } else {
                     System.err.println("Wrong instruction!!!");
                 }

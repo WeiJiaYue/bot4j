@@ -1,5 +1,6 @@
 package bot.trade;
 
+import bot.BarLivingStream;
 import bot.SnapshotGenerator;
 import bot.excel.ExcelProcessor;
 import bot.excel.ExcelTable;
@@ -46,13 +47,18 @@ public class OrderTrace implements Cloneable {
     }
 
 
-    public OrderRecord getOrderByDate(ZonedDateTime zone) {
+    /**
+     * 有可能获取到多个
+     * 就MA策略而言，因为在同一根K线周期内会存在开单然后根据实时成交价止损的情况
+     */
+    public List<OrderRecord> getOrdersByDate(ZonedDateTime zone) {
+        List<OrderRecord> results = new ArrayList<>();
         for (OrderRecord order : orders) {
-            if (zone.equals(order.getBar().getEndTime())) {
-                return order;
+            if (zone.equals(order.getBar())) {
+                results.add(order);
             }
         }
-        return null;
+        return results;
     }
 
 
@@ -104,17 +110,29 @@ public class OrderTrace implements Cloneable {
                 snapshot.returnFee += order.fee * snapshot.RETURN_FEE_RATE;
             }
         }
-        printHighlight("Current snapshot order overview (sum) " + snapshot + " by " + caller);
+        if ("ShutdownMonitor".equals(caller)) {
+            printHighlight("Total trading order size :" + snapshot.getOrders().size());
+            printHighlight("Total trading order overview (sum) " + snapshot + " by " + caller);
+        } else {
+            printHighlight("Current trading order overview (sum) " + snapshot + " by " + caller);
+        }
+
     }
 
 
-    public void dump(BarSeries barSeries) {
+    public void dump(BarLivingStream livingStream, BarSeries barSeries) {
         OrderTrace snapshot = snapshot();
         new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
             @Override
             protected ExcelTable getExcelTable() {
                 ExcelTable table = new ExcelTable();
-                table.addColumn("Date").addColumn("O").addColumn("H").addColumn("C").addColumn("L").addColumn("V").addColumn("MA5").addColumn("MA10").addColumn("Balance").addColumn("Txid").addColumn("Ops").addColumn("Point").addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit").addColumn("OrderDetail");
+                table.addColumn("Date").addColumn("O").addColumn("H").addColumn("C").addColumn("L").addColumn("V")
+                        .addColumn("MA5").addColumn("MA10")
+                        .addColumn("OMA5").addColumn("OMA10")
+                        .addColumn("Balance").addColumn("Txid").addColumn("Ops").addColumn("Time")
+                        .addColumn("Point").addColumn("LastPrice")
+                        .addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit")
+                        .addColumn("OrderDetail");
                 return table;
             }
 
@@ -129,20 +147,15 @@ public class OrderTrace implements Cloneable {
                     row.put("C", String.valueOf(bar.getClosePrice()));
                     row.put("L", String.valueOf(bar.getLowPrice()));
                     row.put("V", String.valueOf(bar.getVolume()));
-                    OrderRecord order = snapshot.getOrderByDate(bar.getEndTime());
-                    if (order != null) {
-                        row.put("MA5", String.valueOf(order.getMa5()));
-                        row.put("MA10", String.valueOf(order.getMa10()));
-                        row.put("Balance", String.valueOf(order.getBalance()));
-                        row.put("Txid", String.valueOf(order.getTxid()));
-                        row.put("Ops", String.valueOf(order.getOps()));
-                        row.put("Point", String.valueOf(order.getPoint()));
-                        row.put("StopLoss", String.valueOf(order.getStopLoss()));
-                        row.put("TV", String.valueOf(order.getVolume()));
-                        row.put("Quantity", String.valueOf(order.getQuantity()));
-                        row.put("Fee", String.valueOf(order.getFee()));
-                        row.put("Profit", String.valueOf(order.getProfit()));
-                        row.put("OrderDetail", order.toString());
+                    row.put("MA5", String.valueOf(livingStream.getSma5Indicator().getValue(i).doubleValue()));
+                    row.put("MA10", String.valueOf(livingStream.getSma10Indicator().getValue(i).doubleValue()));
+                    List<OrderRecord> orders = snapshot.getOrdersByDate(bar.getEndTime());
+                    if (orders != null && !orders.isEmpty()) {
+                        OrderRecord order = orders.get(0);
+                        snapshotOrderRecordToExcelRow(row, order);
+                        for (int j = 1; j < orders.size(); j++) {
+                            snapshotOrderRecordToExcelRow(table.createEmptyRow(), orders.get(j));
+                        }
                     }
                     table.addRow(row);
                 }
@@ -150,17 +163,29 @@ public class OrderTrace implements Cloneable {
         }.process();
     }
 
+    private void snapshotOrderRecordToExcelRow(Map<String, Object> row, OrderRecord order) {
+        row.put("OMA5", String.valueOf(order.getMa5()));
+        row.put("OMA10", String.valueOf(order.getMa10()));
+        row.put("Balance", String.valueOf(order.getBalance()));
+        row.put("Txid", String.valueOf(order.getTxid()));
+        row.put("Ops", String.valueOf(order.getOps()));
+        row.put("Time", String.valueOf(order.getTime()));
+        row.put("Point", String.valueOf(order.getPoint()));
+        row.put("LastPrice", String.valueOf(order.getLastPrice()));
+        row.put("StopLoss", String.valueOf(order.getStopLoss()));
+        row.put("TV", String.valueOf(order.getVolume()));
+        row.put("Quantity", String.valueOf(order.getQuantity()));
+        row.put("Fee", String.valueOf(order.getFee()));
+        row.put("Profit", String.valueOf(order.getProfit()));
+        row.put("OrderDetail", String.valueOf(order.toString()));
+    }
+
 
     private OrderTrace snapshot() {
         OrderTrace snapshot = this;
         if (!this.cloned) {
             snapshot = clone();
-//            print("Use clone");
-        } else {
-//            print("Non-Use clone");
         }
-//        print("This " + this.hashCode());
-//        print("Snapshot " + snapshot.hashCode());
         return snapshot;
     }
 
@@ -295,7 +320,7 @@ public class OrderTrace implements Cloneable {
 
     @Override
     public String toString() {
-        return "{" + "\n" +
+        return "\n{" + "\n" +
                 "CurrentBalance=" + balance + "\n" +
                 ", Profit=" + profit + "\n" +
                 ", Fee=" + fee + "\n" +

@@ -12,6 +12,7 @@ public class OrderRecord {
     String txid;
     Ops ops;
     double point;
+    double lastPrice;
     double stopLoss = -1;
     double volume = 0;
     double quantity = 0;
@@ -51,7 +52,11 @@ public class OrderRecord {
     public OrderRecord point(double point) {
         this.point = point;
         return this;
+    }
 
+    public OrderRecord lastPrice(double lastPrice) {
+        this.lastPrice = lastPrice;
+        return this;
     }
 
     public OrderRecord stopLoss(double stopLoss) {
@@ -108,21 +113,22 @@ public class OrderRecord {
 
     @Override
     public String toString() {
-        return "==> OrderRecord{" +
-                "balance=" + balance +
-                ", txid='" + txid + '\'' +
-                ", ops=" + ops +
-                ", point=" + point +
-                ", stopLoss=" + stopLoss +
-                ", volume=" + volume +
-                ", quantity=" + quantity +
-                ", profit=" + profit +
-                ", fee=" + fee +
-                ", time='" + time + '\'' +
-                ", timestamp=" + timestamp +
-                ", ma5=" + ma5 +
-                ", ma10=" + ma10 +
-                " \n==> at kline=" + bar +
+        return "OrderRecord{" +
+                "balance:" + balance +
+                ", txid:'" + txid + '\'' +
+                ", ops:" + ops +
+                ", point:" + point +
+                ", lastPrice:" + lastPrice +
+                ", stopLoss:" + stopLoss +
+                ", volume:" + volume +
+                ", quantity:" + quantity +
+                ", profit:" + profit +
+                ", fee:" + fee +
+                ", time:'" + time + '\'' +
+                ", timestamp:" + timestamp +
+                ", ma5:" + ma5 +
+                ", ma10:" + ma10 +
+                " \nAt kline=" + bar +
                 '}';
     }
 
@@ -156,6 +162,10 @@ public class OrderRecord {
 
     public double getPoint() {
         return point;
+    }
+
+    public double getLastPrice() {
+        return lastPrice;
     }
 
     public double getStopLoss() {

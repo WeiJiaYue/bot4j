@@ -9,6 +9,7 @@ import com.binance.client.model.market.Candlestick;
 import com.binance.client.model.market.SymbolPrice;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
+import org.ta4j.core.indicators.SMAIndicator;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -34,6 +35,10 @@ public class BarLivingStream {
     private LivingStream livingStream;
     private volatile double lastPrice;
 
+    SMAIndicator sma5Indicator;
+    SMAIndicator sma10Indicator;
+
+
     public BarLivingStream(CandlestickInterval interval, String symbol, int initKLineCount) {
         this(new BaseBarSeriesBuilder().build(), symbol, interval, initKLineCount);
     }
@@ -45,6 +50,22 @@ public class BarLivingStream {
         this.symbol = symbol;
     }
 
+    public void setSma5Indicator(SMAIndicator sma5Indicator) {
+        this.sma5Indicator = sma5Indicator;
+    }
+
+    public void setSma10Indicator(SMAIndicator sma10Indicator) {
+        this.sma10Indicator = sma10Indicator;
+    }
+
+    public SMAIndicator getSma5Indicator() {
+        return sma5Indicator;
+    }
+
+    public SMAIndicator getSma10Indicator() {
+        return sma10Indicator;
+    }
+
     public void run() {
         initialHistoryKLines();
         livingStreamKLines();
@@ -54,7 +75,6 @@ public class BarLivingStream {
     public static void main(String[] args) {
         BarLivingStream bar = new BarLivingStream(CandlestickInterval.ONE_MINUTE, "BTCUSDT", 1000);
         bar.run();
-
     }
 
     private void livingStreamKLines() {
@@ -62,12 +82,11 @@ public class BarLivingStream {
         client.subscribeCandlestickEvent(this.symbol.toLowerCase(),
                 this.interval,
                 event -> {
-                    List<SymbolPrice> btcusdt = SyncRequestClient.create().getSymbolPriceTicker("BTCUSDT");
-                    this.lastPrice = Double.parseDouble(String.valueOf(btcusdt.get(0).getPrice()));
+                    List<SymbolPrice> tickers = SyncRequestClient.create().getSymbolPriceTicker(symbol.toUpperCase());
+                    this.lastPrice = Double.parseDouble(String.valueOf(tickers.get(0).getPrice()));
                     if (livingStream != null) {
                         livingStream.onLiving(event);
                     }
-
                     Date closeDateTime = new Date(event.getCloseTime());
                     ZonedDateTime closeZoneTime = ZonedDateTime.ofInstant(closeDateTime.toInstant(), ZoneId.systemDefault());
                     //最新的一条k线还没有出来完整，先不放入BarSerial。等待周期内的k先出完毕再放入BarSerials
@@ -154,4 +173,5 @@ public class BarLivingStream {
     public void setLastPrice(double lastPrice) {
         this.lastPrice = lastPrice;
     }
+
 }
