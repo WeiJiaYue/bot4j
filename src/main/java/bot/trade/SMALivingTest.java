@@ -2,6 +2,7 @@ package bot.trade;
 
 import bot.BarLivingStream;
 import bot.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.binance.client.model.enums.CandlestickInterval;
 import org.apache.commons.lang3.StringUtils;
 import org.ta4j.core.Bar;
@@ -86,7 +87,7 @@ public class SMALivingTest {
 
 
     public static OrderRecord close(OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
-        OrderRecord order = currentPosition;
+        OrderRecord order = OrderRecord.build();
         order.txid(currentPosition.txid)
                 .ops(ops)
                 .point(closePrice)
@@ -96,7 +97,7 @@ public class SMALivingTest {
                 .fee(order.quantity * TAKER_FEE)
                 .profit(order.quantity - ORDER_TRACE.balance - order.fee)
                 .balance(ORDER_TRACE.balance += order.profit)
-                .bar(lastBar)
+                .bar(lastBar.getEndTime())
                 .ma5(ma5)
                 .ma10(ma10)
                 .time(DateUtil.getCurrentDateTime())
@@ -119,7 +120,7 @@ public class SMALivingTest {
                 .quantity(ORDER_TRACE.balance)
                 .profit(-order.fee)
                 .balance(ORDER_TRACE.balance -= order.fee)
-                .bar(lastBar)
+                .bar(lastBar.getEndTime())
                 .ma5(ma5)
                 .ma10(ma10)
                 .time(DateUtil.getCurrentDateTime())
@@ -167,21 +168,25 @@ public class SMALivingTest {
         while (scan.hasNextLine()) {
             try {
                 String instruction = scan.nextLine();
-                if ("help".equals(instruction.toLowerCase())) {
+                if (StringUtils.isBlank(instruction)) {
+                    continue;
+                }
+                if ("help".equalsIgnoreCase(instruction)) {
                     System.err.println("Current supported instructions are:");
                     System.err.println("Snapshot");
                     System.err.println("SnapshotDump");
                     System.err.println("PeekSize");
-                } else if ("Snapshot".equals(instruction)) {
+                    System.err.println("PeekOrders");
+                } else if ("Snapshot".equalsIgnoreCase(instruction)) {
                     new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, false).run();
-                } else if ("SnapshotDump".equals(instruction)) {
+                } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
                     new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, true).run();
-                } else if ("PeekSize".equals(instruction)) {
-                    print("Order size :" + ORDER_TRACE.getOrders().size());
+                } else if ("PeekSize".equalsIgnoreCase(instruction)) {
+                    printHighlight("Order size :" + ORDER_TRACE.getOrders().size());
+                } else if ("PeekOrders".equalsIgnoreCase(instruction)) {
+                    printHighlight("Orders :" + JSON.toJSONString(ORDER_TRACE.getOrders()));
                 } else {
-                    if (StringUtils.isNotBlank(instruction)) {
-                        System.err.println("Wrong instruction!!!");
-                    }
+                    System.err.println("Wrong instruction!!!");
                 }
             } catch (Exception e) {
                 printHighlight("CLI exception!!!");

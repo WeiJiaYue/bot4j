@@ -1,9 +1,7 @@
 package bot.trade;
 
-import org.ta4j.core.Bar;
 
-import java.util.Date;
-import java.util.Scanner;
+import java.time.ZonedDateTime;
 
 /**
  * Created by louisyuu on 2021/8/30 3:30 下午
@@ -22,7 +20,7 @@ public class OrderRecord {
     String time;
     long timestamp;
 
-    Bar bar;
+    ZonedDateTime bar;
     double ma5 = -1;
     double ma10 = -1;
 
@@ -92,7 +90,7 @@ public class OrderRecord {
         return this;
     }
 
-    public OrderRecord bar(Bar bar) {
+    public OrderRecord bar(ZonedDateTime bar) {
         this.bar = bar;
         return this;
     }
@@ -124,7 +122,7 @@ public class OrderRecord {
                 ", timestamp=" + timestamp +
                 ", ma5=" + ma5 +
                 ", ma10=" + ma10 +
-                " \n==> OrderedBar=" + bar +
+                " \n==> at kline=" + bar +
                 '}';
     }
 
@@ -188,7 +186,7 @@ public class OrderRecord {
         return timestamp;
     }
 
-    public Bar getBar() {
+    public ZonedDateTime getBar() {
         return bar;
     }
 
@@ -201,25 +199,4 @@ public class OrderRecord {
     }
 
 
-    static String Hello = "Hello-World";
-
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
-
-
-        while(scan.hasNextLine()){
-            String s = scan.nextLine();
-
-            System.out.println("Enter "+s);
-
-            if(s.equals("1")){
-                System.out.println(Hello);
-
-            }
-
-        }
-
-        System.out.println("End");
-
-    }
 }

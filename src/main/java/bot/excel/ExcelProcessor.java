@@ -1,5 +1,6 @@
 package bot.excel;
 
+import bot.DateUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public abstract class ExcelProcessor {
 
     //Default new file name is ExcelDao_uuid.xls
     //Use setNewFileName() to override if required
-    protected String newFilename = "ExcelDao_" + UUID.randomUUID() +"."+ newFileSuffix.name();
+    protected String newFilename = "ExcelDao_" + DateUtil.getCurrentDateTime() + "." + newFileSuffix.name();
 
 
     //Default sheet name is ExcelDao
@@ -89,7 +90,7 @@ public abstract class ExcelProcessor {
 
     /**
      * Last step
-     *
+     * <p>
      * Convert java object ExcelTable to excel file to disk
      */
     protected void produce(ExcelTable table) {

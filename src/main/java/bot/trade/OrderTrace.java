@@ -67,7 +67,18 @@ public class OrderTrace implements Cloneable {
             printHighlight("OrderPairMap is empty");
             return;
         }
-        for (Map.Entry<String, List<OrderRecord>> entry : orderPairMap.entrySet()) {
+        SortedMap<String, List<OrderRecord>> sortedMap = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                try {
+                    return Integer.parseInt(o1) - Integer.parseInt(o2);
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            }
+        });
+        sortedMap.putAll(orderPairMap);
+        for (Map.Entry<String, List<OrderRecord>> entry : sortedMap.entrySet()) {
             List<OrderRecord> orderPair = entry.getValue();
             for (OrderRecord order : orderPair) {
                 if (OrderRecord.Ops.Long.equals(order.ops) || OrderRecord.Ops.Short.equals(order.ops)) {
@@ -93,7 +104,7 @@ public class OrderTrace implements Cloneable {
                 snapshot.returnFee += order.fee * snapshot.RETURN_FEE_RATE;
             }
         }
-        printHighlight("Current snapshot order overview " + snapshot + " by " + caller);
+        printHighlight("Current snapshot order overview (sum) " + snapshot + " by " + caller);
     }
 
 
@@ -284,22 +295,21 @@ public class OrderTrace implements Cloneable {
 
     @Override
     public String toString() {
-        return "Stats{" +
-                "HashCode=" + this.hashCode() +
-                ", Balance=" + balance +
-                ", profit=" + profit +
-                ", fee=" + fee +
-                ", returnFee=" + returnFee +
-                ", maxProfit=" + maxProfit +
-                ", maxLoss=" + maxLoss +
-                ", volume=" + volume +
-                ", quantity=" + quantity +
-                ", openCount=" + openCount +
-                ", closeCount=" + closeCount +
-                ", stopLossCount=" + stopLossCount +
-                ", succeedCount=" + succeedCount +
-                ", failedCount=" + failedCount +
-                ", succeedRatio=" + ((succeedCount * 1.00) / (openCount * 1.00)) * 100 + "%" +
+        return "{" + "\n" +
+                "CurrentBalance=" + balance + "\n" +
+                ", Profit=" + profit + "\n" +
+                ", Fee=" + fee + "\n" +
+                ", ReturnFee=" + returnFee + "\n" +
+                ", MaxProfit=" + maxProfit + "\n" +
+                ", MaxLoss=" + maxLoss + "\n" +
+                ", Volume=" + volume + "\n" +
+                ", Quantity=" + quantity + "\n" +
+                ", OpenedCount=" + openCount + "\n" +
+                ", ClosedCount=" + closeCount + "\n" +
+                ", StopLossCount=" + stopLossCount + "\n" +
+                ", SucceedCount=" + succeedCount + "\n" +
+                ", FailedCount=" + failedCount + "\n" +
+                ", SucceedRatio=" + ((succeedCount * 1.00) / (openCount * 1.00)) * 100 + "%" + "\n" +
                 "}";
     }
 }
