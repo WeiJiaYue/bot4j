@@ -1,15 +1,17 @@
 package bot.trade;
 
-import com.alibaba.fastjson.JSON;
+import bot.SnapshotGenerator;
+import bot.excel.ExcelProcessor;
+import bot.excel.ExcelTable;
 import com.alibaba.fastjson.JSONObject;
+import org.ta4j.core.Bar;
+import org.ta4j.core.BarSeries;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static bot.DateUtil.print;
+import static bot.DateUtil.printHighlight;
 
 /**
  * Created by louisyuu on 2021/8/27 3:22 下午
@@ -54,24 +56,17 @@ public class OrderTrace implements Cloneable {
     }
 
 
-    public void snapshotForCurrentOrderTrace(String caller) {
-        OrderTrace snapshot = this;
-        if (!this.cloned) {
-            snapshot = clone();
-//            print("Use clone");
-        }else{
-//            print("Non-Use clone");
-        }
-//        print("This " + this.hashCode());
-//        print("Snapshot " + snapshot.hashCode());
-
+    public void snapshot(String caller) {
+        OrderTrace snapshot = snapshot();
         if (snapshot.orders.isEmpty()) {
-            print("No orders");
+            printHighlight("No orders");
             return;
         }
-
         Map<String, List<OrderRecord>> orderPairMap = snapshot.orders.stream().collect(Collectors.groupingBy(OrderRecord::getTxid));
-
+        if (orderPairMap.isEmpty()) {
+            printHighlight("OrderPairMap is empty");
+            return;
+        }
         for (Map.Entry<String, List<OrderRecord>> entry : orderPairMap.entrySet()) {
             List<OrderRecord> orderPair = entry.getValue();
             for (OrderRecord order : orderPair) {
@@ -98,17 +93,75 @@ public class OrderTrace implements Cloneable {
                 snapshot.returnFee += order.fee * snapshot.RETURN_FEE_RATE;
             }
         }
+        printHighlight("Current snapshot order overview " + snapshot + " by " + caller);
+    }
 
-        print("Current snapshot order overview " + snapshot+" by "+caller);
+
+    public void dump(BarSeries barSeries) {
+        OrderTrace snapshot = snapshot();
+        new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
+            @Override
+            protected ExcelTable getExcelTable() {
+                ExcelTable table = new ExcelTable();
+                table.addColumn("Date").addColumn("O").addColumn("H").addColumn("C").addColumn("L").addColumn("V").addColumn("MA5").addColumn("MA10").addColumn("Balance").addColumn("Txid").addColumn("Ops").addColumn("Point").addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit").addColumn("OrderDetail");
+                return table;
+            }
+
+            @Override
+            public void doProcess(ExcelTable table) throws Exception {
+                for (int i = 0; i <= barSeries.getEndIndex(); i++) {
+                    Bar bar = barSeries.getBar(i);
+                    Map<String, Object> row = table.createEmptyRow();
+                    row.put("Date", bar.getEndTime());
+                    row.put("O", String.valueOf(bar.getOpenPrice()));
+                    row.put("H", String.valueOf(bar.getHighPrice()));
+                    row.put("C", String.valueOf(bar.getClosePrice()));
+                    row.put("L", String.valueOf(bar.getLowPrice()));
+                    row.put("V", String.valueOf(bar.getVolume()));
+                    OrderRecord order = snapshot.getOrderByDate(bar.getEndTime());
+                    if (order != null) {
+                        row.put("MA5", String.valueOf(order.getMa5()));
+                        row.put("MA10", String.valueOf(order.getMa10()));
+                        row.put("Balance", String.valueOf(order.getBalance()));
+                        row.put("Txid", String.valueOf(order.getTxid()));
+                        row.put("Ops", String.valueOf(order.getOps()));
+                        row.put("Point", String.valueOf(order.getPoint()));
+                        row.put("StopLoss", String.valueOf(order.getStopLoss()));
+                        row.put("TV", String.valueOf(order.getVolume()));
+                        row.put("Quantity", String.valueOf(order.getQuantity()));
+                        row.put("Fee", String.valueOf(order.getFee()));
+                        row.put("Profit", String.valueOf(order.getProfit()));
+                        row.put("OrderDetail", order.toString());
+                    }
+                    table.addRow(row);
+                }
+            }
+        }.process();
+    }
+
+
+    private OrderTrace snapshot() {
+        OrderTrace snapshot = this;
+        if (!this.cloned) {
+            snapshot = clone();
+//            print("Use clone");
+        } else {
+//            print("Non-Use clone");
+        }
+//        print("This " + this.hashCode());
+//        print("Snapshot " + snapshot.hashCode());
+        return snapshot;
     }
 
 
     @Override
     protected OrderTrace clone() {
         String json = JSONObject.toJSONString(this);
-        OrderTrace stats = JSONObject.parseObject(json, OrderTrace.class);
-        stats.cloned = true;
-        return stats;
+        List<OrderRecord> srcOrders = this.getOrders();
+        OrderTrace trace = JSONObject.parseObject(json, OrderTrace.class);
+        trace.cloned = true;
+        trace.setOrders(srcOrders);
+        return trace;
     }
 
     public double getBalance() {

@@ -3,11 +3,13 @@ package bot.trade;
 import bot.BarLivingStream;
 import bot.DateUtil;
 import com.binance.client.model.enums.CandlestickInterval;
+import org.apache.commons.lang3.StringUtils;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +34,6 @@ public class SMALivingTest {
     public static void main(String[] args) throws Exception {
         BarLivingStream livingStream = new BarLivingStream(INTERVAL, SYMBOL_FOR_TRADING, HISTORY_KLINE_COUNT);
         BarSeries barSeries = livingStream.getBarSeries();
-        //Enable monitors
-        enableScheduledOrderTraceMonitor(barSeries);
-        enableShutdownOrderTraceMonitor(barSeries);
 
         //Indicator
         ClosePriceIndicator closePrice = new ClosePriceIndicator(barSeries);
@@ -42,7 +41,8 @@ public class SMALivingTest {
         SMAIndicator sma10Indicator = new SMAIndicator(closePrice, 10);
         //Run
         livingStream.run();
-        print("Living trading started with bar size " + barSeries.getEndIndex() + " at last bar " + barSeries.getLastBar());
+        print("Living trading started with bar size " + barSeries.getEndIndex());
+        print("Living trading started at last bar " + barSeries.getLastBar());
         //Living trade handler
         livingStream.setLastBarStream(new LastBarStream() {
             @Override
@@ -53,6 +53,7 @@ public class SMALivingTest {
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
 //                print("Taker price " + lastPrice + " at latest kline " + lastBar);
+                print("Latest bar " + lastBar);
                 if (lastIndex < WARMUP_COUNT) {
                     return;
                 }
@@ -77,7 +78,9 @@ public class SMALivingTest {
                 close(OrderRecord.Ops.StopLossLong, lastPrice, lastBar, ma5, ma10);
             }
         });
-
+        //Enable monitors
+        enableShutdownOrderTraceMonitor(barSeries);
+        enableCLIMonitor(barSeries);
 
     }
 
@@ -147,15 +150,44 @@ public class SMALivingTest {
 
 
     public static void enableShutdownOrderTraceMonitor(BarSeries barSeries) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new OrderTraceRunnable("ShutdownMonitor", ORDER_TRACE, barSeries)));
+        Runtime.getRuntime().addShutdownHook(new Thread(new OrderTraceRunnable("ShutdownMonitor", ORDER_TRACE, barSeries, true)));
     }
 
     public static void enableScheduledOrderTraceMonitor(BarSeries barSeries) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
-                new OrderTraceRunnable("ScheduledMonitor", ORDER_TRACE, barSeries),
+                new OrderTraceRunnable("ScheduledMonitor", ORDER_TRACE, barSeries, false),
                 10,
                 10,
                 TimeUnit.SECONDS);
+    }
+
+
+    public static void enableCLIMonitor(BarSeries barSeries) {
+        Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
+        while (scan.hasNextLine()) {
+            try {
+                String instruction = scan.nextLine();
+                if ("help".equals(instruction.toLowerCase())) {
+                    System.err.println("Current supported instructions are:");
+                    System.err.println("Snapshot");
+                    System.err.println("SnapshotDump");
+                    System.err.println("PeekSize");
+                } else if ("Snapshot".equals(instruction)) {
+                    new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, false).run();
+                } else if ("SnapshotDump".equals(instruction)) {
+                    new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, barSeries, true).run();
+                } else if ("PeekSize".equals(instruction)) {
+                    print("Order size :" + ORDER_TRACE.getOrders().size());
+                } else {
+                    if (StringUtils.isNotBlank(instruction)) {
+                        System.err.println("Wrong instruction!!!");
+                    }
+                }
+            } catch (Exception e) {
+                printHighlight("CLI exception!!!");
+                e.printStackTrace();
+            }
+        }
     }
 
 

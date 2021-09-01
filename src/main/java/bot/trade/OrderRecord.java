@@ -3,6 +3,7 @@ package bot.trade;
 import org.ta4j.core.Bar;
 
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  * Created by louisyuu on 2021/8/30 3:30 下午
@@ -197,5 +198,28 @@ public class OrderRecord {
 
     public double getMa10() {
         return ma10;
+    }
+
+
+    static String Hello = "Hello-World";
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
+
+
+        while(scan.hasNextLine()){
+            String s = scan.nextLine();
+
+            System.out.println("Enter "+s);
+
+            if(s.equals("1")){
+                System.out.println(Hello);
+
+            }
+
+        }
+
+        System.out.println("End");
+
     }
 }
