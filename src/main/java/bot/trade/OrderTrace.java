@@ -150,15 +150,18 @@ public class OrderTrace implements Cloneable {
                     row.put("MA5", String.valueOf(livingStream.getSma5Indicator().getValue(i).doubleValue()));
                     row.put("MA10", String.valueOf(livingStream.getSma10Indicator().getValue(i).doubleValue()));
                     row.put("LastPrice", String.valueOf(livingStream.getLastPrice()));
+                    table.addRow(row);
                     List<OrderRecord> orders = snapshot.getOrdersByDate(bar.getEndTime());
                     if (orders != null && !orders.isEmpty()) {
                         OrderRecord order = orders.get(0);
                         snapshotOrderRecordToExcelRow(row, order);
                         for (int j = 1; j < orders.size(); j++) {
-                            snapshotOrderRecordToExcelRow(table.createEmptyRow(), orders.get(j));
+                            Map<String, Object> extraRow = table.createEmptyRow();
+                            table.addRow(extraRow);
+                            snapshotOrderRecordToExcelRow(extraRow, orders.get(j));
                         }
                     }
-                    table.addRow(row);
+
                 }
             }
         }.process();
