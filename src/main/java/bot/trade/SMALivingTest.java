@@ -63,12 +63,12 @@ public class SMALivingTest {
                 if (ma5 > ma10 && currentPosition == null) {
                     double longMarketPrice = GetOrderBook.getLongMarketPrice(SYMBOL_FOR_TRADING);
                     double stopLoss = getStopLossWhenLong(barSeries, longMarketPrice, lastIndex);
-                    open(String.valueOf(lastIndex), longMarketPrice, lastBar, ma5, ma10, stopLoss);
+                    open(livingStream, String.valueOf(lastIndex), longMarketPrice, lastBar, ma5, ma10, stopLoss);
                 }
                 //CloseLong
                 else if (currentPosition != null && ma5 < ma10) {
                     double shortMarketPrice = GetOrderBook.getShortMarketPrice(SYMBOL_FOR_TRADING);
-                    close(OrderRecord.Ops.CloseLong, shortMarketPrice, lastBar, ma5, ma10);
+                    close(livingStream, OrderRecord.Ops.CloseLong, shortMarketPrice, lastBar, ma5, ma10);
                 }
             }
         });
@@ -80,7 +80,7 @@ public class SMALivingTest {
                 Bar lastBar = barSeries.getLastBar();
                 double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
                 double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-                close(OrderRecord.Ops.StopLossLong, shortMarketPrice, lastBar, ma5, ma10);
+                close(livingStream, OrderRecord.Ops.StopLossLong, shortMarketPrice, lastBar, ma5, ma10);
             }
         });
         //Enable monitors
@@ -90,11 +90,12 @@ public class SMALivingTest {
     }
 
 
-    public static OrderRecord close(OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
+    public static OrderRecord close(BarLivingStream livingStream, OrderRecord.Ops ops, double closePrice, Bar lastBar, double ma5, double ma10) {
         OrderRecord order = OrderRecord.build();
         order.txid(currentPosition.txid)
                 .ops(ops)
                 .point(closePrice)
+                .lastPrice(livingStream.getLastPrice())
                 .stopLoss(-1)
                 .volume(currentPosition.volume)
                 .quantity(order.point * order.volume)
@@ -113,11 +114,12 @@ public class SMALivingTest {
     }
 
 
-    public static OrderRecord open(String txid, double openPrice, Bar lastBar, double ma5, double ma10, double stopLoss) {
+    public static OrderRecord open(BarLivingStream livingStream, String txid, double openPrice, Bar lastBar, double ma5, double ma10, double stopLoss) {
         OrderRecord order = OrderRecord.build();
         order.txid(txid)
                 .ops(OrderRecord.Ops.Long)
                 .point(openPrice)
+                .lastPrice(livingStream.getLastPrice())
                 .stopLoss(stopLoss)
                 .volume(ORDER_TRACE.balance / order.point)
                 .fee(ORDER_TRACE.balance * TAKER_FEE)
