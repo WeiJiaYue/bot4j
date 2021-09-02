@@ -127,11 +127,9 @@ public class OrderTrace implements Cloneable {
             protected ExcelTable getExcelTable() {
                 ExcelTable table = new ExcelTable();
                 table.addColumn("Date").addColumn("O").addColumn("H").addColumn("C").addColumn("L").addColumn("V")
-                        .addColumn("MA5").addColumn("MA10")
-                        .addColumn("OMA5").addColumn("OMA10").addColumn("LastPrice")
+                        .addColumn("MA5").addColumn("MA10").addColumn("LastPrice")
                         .addColumn("Balance").addColumn("Txid").addColumn("Ops").addColumn("Time")
-                        .addColumn("Point").addColumn("OLastPrice")
-                        .addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit")
+                        .addColumn("Point").addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit")
                         .addColumn("OrderDetail");
                 return table;
             }
@@ -149,7 +147,6 @@ public class OrderTrace implements Cloneable {
                     row.put("V", String.valueOf(bar.getVolume()));
                     row.put("MA5", String.valueOf(livingStream.getSma5Indicator().getValue(i).doubleValue()));
                     row.put("MA10", String.valueOf(livingStream.getSma10Indicator().getValue(i).doubleValue()));
-                    row.put("LastPrice", String.valueOf(livingStream.getLastPrice()));
                     table.addRow(row);
                     List<OrderRecord> orders = snapshot.getOrdersByDate(bar.getEndTime());
                     if (orders != null && !orders.isEmpty()) {
@@ -168,14 +165,12 @@ public class OrderTrace implements Cloneable {
     }
 
     private void snapshotOrderRecordToExcelRow(Map<String, Object> row, OrderRecord order) {
-        row.put("OMA5", String.valueOf(order.getMa5()));
-        row.put("OMA10", String.valueOf(order.getMa10()));
+        row.put("LastPrice", String.valueOf(order.getLastPrice()));
         row.put("Balance", String.valueOf(order.getBalance()));
         row.put("Txid", String.valueOf(order.getTxid()));
         row.put("Ops", String.valueOf(order.getOps()));
         row.put("Time", String.valueOf(order.getTime()));
         row.put("Point", String.valueOf(order.getPoint()));
-        row.put("OLastPrice", String.valueOf(order.getLastPrice()));
         row.put("StopLoss", String.valueOf(order.getStopLoss()));
         row.put("TV", String.valueOf(order.getVolume()));
         row.put("Quantity", String.valueOf(order.getQuantity()));

@@ -1,5 +1,6 @@
 package com.binance.client.examples.market;
 
+import bot.DateUtil;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 
@@ -15,7 +16,13 @@ public class GetOrderBook {
 
 
 
-        System.out.println(System.currentTimeMillis() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
 
 
         OrderBook book = syncRequestClient.getOrderBook("BTCUSDT", null);

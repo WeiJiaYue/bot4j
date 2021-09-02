@@ -1,5 +1,6 @@
 package com.binance.client.examples.market;
 
+import bot.DateUtil;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 
@@ -11,7 +12,11 @@ public class GetSymbolPriceTicker {
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
                 options);
 
-        System.out.println(System.currentTimeMillis() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
+        System.out.println(DateUtil.getCurrentDateTime() + "==> " + syncRequestClient.getSymbolPriceTicker("BTCUSDT"));
 
 //        for (int i = 0; i < 100; i++) {
 //
