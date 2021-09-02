@@ -3,7 +3,9 @@ package bot;
 import bot.trade.LivingStream;
 import bot.trade.LastBarStream;
 import com.binance.client.SubscriptionClient;
+import com.binance.client.SubscriptionErrorHandler;
 import com.binance.client.SyncRequestClient;
+import com.binance.client.exception.BinanceApiException;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.Candlestick;
 import com.binance.client.model.market.SymbolPrice;
@@ -91,6 +93,11 @@ public class BarLivingStream {
                     ZonedDateTime closeZoneTime = ZonedDateTime.ofInstant(closeDateTime.toInstant(), ZoneId.systemDefault());
                     //最新的一条k线还没有出来完整，先不放入BarSerial。等待周期内的k先出完毕再放入BarSerials
                     if (event.getEventTime() >= event.getCloseTime()) {
+                        /**
+                         * 事件时间一超过收盘价的时间，就会立马将K线信息加入BarSeries。延时为几毫秒到几十毫秒之间
+                         * EventDate:2021-09-02 16:19:00:052
+                         * CloseDate:2021-09-02 16:18:59:999
+                         */
                         this.barSeries.addBar(closeZoneTime, event.getOpen(), event.getHigh(), event.getLow(), event.getClose(), event.getVolume());
                         if (lastBarStream != null) {
                             lastBarStream.onLastBar();
@@ -98,8 +105,12 @@ public class BarLivingStream {
                     }
                 },
                 exception -> {
-                    printHighlight("Websocket error");
-//                    exception.printStackTrace();
+                    if (exception.getMessage().startsWith("Cannot add a bar with end time")) {
+                        printHighlight("Duplicate kline event message");
+                    } else {
+                        printHighlight("Websocket error");
+                        exception.printStackTrace();
+                    }
                 });
     }
 

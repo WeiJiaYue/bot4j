@@ -14,11 +14,16 @@ public class DateUtil {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         return format.format(date);
+    }
 
+    public static String getDateTime(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
+        return format.format(date);
     }
 
 
-    public static void print(String text) {
+
+        public static void print(String text) {
         System.out.println(getCurrentDateTime() + " ==> " + text);
     }
 

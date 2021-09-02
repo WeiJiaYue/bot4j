@@ -19,7 +19,7 @@ public class SMABackTesting extends ExcelProcessor {
     public final static List<Double> SMA10_SERIES = new ArrayList<>();
 
     //Custom params
-    public final static boolean LOSS_LESS = false;
+    public final static boolean LOSS_LESS = true;
     public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
     public final static double TAKER_FEE = 0.00040;
@@ -132,10 +132,10 @@ public class SMABackTesting extends ExcelProcessor {
 //            }
             //crossover
             if (ma5 > ma10 && currentPosition == null) {
-                double stopLoss = getStopLoss(current.getOpenPrice().doubleValue(), index);
+                double stopLoss = getStopLoss(current.getClosePrice().doubleValue(), index);
                 currentPosition = new Record();
                 currentPosition.ops = "OpenLongOrder";
-                currentPosition.point = current.getOpenPrice().doubleValue();
+                currentPosition.point = current.getClosePrice().doubleValue();
                 currentPosition.stopLoss = stopLoss;
                 currentPosition.id = String.valueOf(index);
                 currentPosition.volume = BALANCE / currentPosition.point;
@@ -182,11 +182,11 @@ public class SMABackTesting extends ExcelProcessor {
             //CloseLong
             if (currentPosition != null && ma5 < ma10) {
                 row.put("Ops", "CloseLongOrder");
-                row.put("Point", current.getOpenPrice().doubleValue());
+                row.put("Point", current.getClosePrice().doubleValue());
                 row.put("StopLoss", 0);
                 row.put("Txid", currentPosition.id);
 
-                double newBalance = current.getOpenPrice().doubleValue() * currentPosition.volume;
+                double newBalance = current.getClosePrice().doubleValue() * currentPosition.volume;
                 double closeFee = newBalance * TAKER_FEE;
                 double closeNetProfit = newBalance - BALANCE - closeFee;
                 BALANCE = BALANCE + closeNetProfit;

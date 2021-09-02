@@ -27,7 +27,8 @@ public class SMALivingTest {
     public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
     public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
     public final static int HISTORY_KLINE_COUNT = 100;
-    public final static double INIT_BALANCE = 100;
+    public final static int STOP_LOSS_KLINE_OFFSET = 10;
+    public final static double INIT_BALANCE = 1000;
     private final static OrderTrace ORDER_TRACE = new OrderTrace(INIT_BALANCE);
 
     private static OrderRecord currentPosition;
@@ -47,29 +48,26 @@ public class SMALivingTest {
         print("Living trading started with bar size " + barSeries.getEndIndex());
         print("Living trading started at last bar " + barSeries.getLastBar());
         //Living trade handler
-        livingStream.setLastBarStream(new LastBarStream() {
-            @Override
-            public void onLastBar() {
-                int lastIndex = barSeries.getEndIndex();
-                Bar lastBar = barSeries.getLastBar();
+        livingStream.setLastBarStream(() -> {
+            int lastIndex = barSeries.getEndIndex();
+            Bar lastBar = barSeries.getLastBar();
 //                double lastPrice = livingStream.getLastPrice();
-                double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
-                double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
-                print("Latest bar " + lastBar);
-                if (lastIndex < WARMUP_COUNT) {
-                    return;
-                }
-                //Long when crossover
-                if (ma5 > ma10 && currentPosition == null) {
-                    double longMarketPrice = GetOrderBook.getLongMarketPrice(SYMBOL_FOR_TRADING);
-                    double stopLoss = getStopLossWhenLong(barSeries, longMarketPrice, lastIndex);
-                    open(livingStream, String.valueOf(lastIndex), longMarketPrice, lastBar, ma5, ma10, stopLoss);
-                }
-                //CloseLong
-                else if (currentPosition != null && ma5 < ma10) {
-                    double shortMarketPrice = GetOrderBook.getShortMarketPrice(SYMBOL_FOR_TRADING);
-                    close(livingStream, OrderRecord.Ops.CloseLong, shortMarketPrice, lastBar, ma5, ma10);
-                }
+            double ma5 = sma5Indicator.getValue(lastIndex).doubleValue();
+            double ma10 = sma10Indicator.getValue(lastIndex).doubleValue();
+            print("Latest bar " + lastBar);
+            if (lastIndex < WARMUP_COUNT) {
+                return;
+            }
+            //Long when crossover
+            if (ma5 > ma10 && currentPosition == null) {
+                double longMarketPrice = GetOrderBook.getLongMarketPrice(SYMBOL_FOR_TRADING);
+                double stopLoss = getStopLossWhenLong(barSeries, longMarketPrice, lastIndex);
+                open(livingStream, String.valueOf(lastIndex), longMarketPrice, lastBar, ma5, ma10, stopLoss);
+            }
+            //CloseLong
+            else if (currentPosition != null && ma5 < ma10) {
+                double shortMarketPrice = GetOrderBook.getShortMarketPrice(SYMBOL_FOR_TRADING);
+                close(livingStream, OrderRecord.Ops.CloseLong, shortMarketPrice, lastBar, ma5, ma10);
             }
         });
         livingStream.setLivingStream(event -> {
@@ -108,8 +106,8 @@ public class SMALivingTest {
                 .time(DateUtil.getCurrentDateTime())
                 .timestamp(System.currentTimeMillis());
         ORDER_TRACE.addOrder(order);
-        currentPosition = null;
         printHighlight(order.ops + " order :" + order);
+        currentPosition = null;
         return order;
     }
 
@@ -142,7 +140,7 @@ public class SMALivingTest {
         int stopLossIdx = index;
         Bar stopLossBar = barSeries.getBar(--stopLossIdx);
         double stopLoss = stopLossBar.getLowPrice().doubleValue();
-        for (int i = stopLossIdx; i > stopLossIdx - 5; i--) {
+        for (int i = stopLossIdx; i > stopLossIdx - STOP_LOSS_KLINE_OFFSET; i--) {
             Bar pre = barSeries.getBar(i);
             double other = pre.getLowPrice().doubleValue();
             stopLoss = Math.min(stopLoss, other);
@@ -189,7 +187,7 @@ public class SMALivingTest {
                 } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
                     new Thread(new OrderTraceRunnable("CLIMonitor", ORDER_TRACE, livingStream, barSeries, true)).start();
                 } else if ("PeekSize".equalsIgnoreCase(instruction)) {
-                    printHighlight("Current trading order size : :" + ORDER_TRACE.getOrders().size());
+                    printHighlight("Current trading order size :" + ORDER_TRACE.getOrders().size());
                 } else if ("PeekOrders".equalsIgnoreCase(instruction)) {
                     printHighlight("Current trading orders :" + JSON.toJSONString(ORDER_TRACE.getOrders()));
                 } else {
