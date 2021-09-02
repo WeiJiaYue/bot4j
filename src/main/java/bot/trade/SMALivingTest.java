@@ -21,13 +21,13 @@ public class SMALivingTest {
 
     //Custom params
     public final static boolean LOSS_LESS = true;
-    public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
-    public final static double TAKER_FEE = 0.00040;
-    public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
-    public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
-    public final static int HISTORY_KLINE_COUNT = 100;
     public final static int STOP_LOSS_KLINE_OFFSET = 10;
+    public final static int WARMUP_COUNT = 10;
+    public final static double TAKER_FEE = 0.00040;
+    public final static CandlestickInterval INTERVAL = CandlestickInterval.FIVE_MINUTES;
+    public final static String SYMBOL_FOR_TRADING = "BTCUSDT";
+    public final static int HISTORY_KLINE_COUNT = 20;
     public final static double INIT_BALANCE = 1000;
     private final static OrderTrace ORDER_TRACE = new OrderTrace(INIT_BALANCE);
 

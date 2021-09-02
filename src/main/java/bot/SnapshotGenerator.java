@@ -24,7 +24,7 @@ public class SnapshotGenerator extends ExcelProcessor {
 
 
     //Custom
-    private final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
+    private final static CandlestickInterval INTERVAL = CandlestickInterval.FIVE_MINUTES;
     private final static int KLINE_COUNT = 1000;
 
 

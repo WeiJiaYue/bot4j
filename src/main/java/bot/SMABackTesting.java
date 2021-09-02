@@ -23,7 +23,7 @@ public class SMABackTesting extends ExcelProcessor {
     public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
     public final static double TAKER_FEE = 0.00040;
-    public final static CandlestickInterval interval = CandlestickInterval.ONE_MINUTE;
+    public final static CandlestickInterval interval = CandlestickInterval.FIVE_MINUTES;
     public static double BALANCE = 10000;
     public static double INITIAL_BALANCE = 10000;
 
@@ -159,11 +159,11 @@ public class SMABackTesting extends ExcelProcessor {
             //StopLoss
             if (currentPosition != null && current.getLowPrice().doubleValue() < currentPosition.stopLoss) {
                 row.put("Ops", "StopLoss");
-                row.put("Point", currentPosition.stopLoss);
+                row.put("Point", current.getLowPrice().doubleValue());
                 row.put("StopLoss", 0);
                 row.put("Txid", currentPosition.id);
 
-                double newBalance = currentPosition.stopLoss * currentPosition.volume;
+                double newBalance =current.getLowPrice().doubleValue() * currentPosition.volume;
                 double closeFee = newBalance * TAKER_FEE;
                 double closeNetProfit = newBalance - BALANCE - closeFee;
                 BALANCE = BALANCE + closeNetProfit;
