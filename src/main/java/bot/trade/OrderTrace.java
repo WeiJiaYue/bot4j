@@ -18,29 +18,30 @@ import static bot.DateUtil.printHighlight;
  * Created by louisyuu on 2021/8/27 3:22 下午
  */
 public class OrderTrace implements Cloneable {
-    double balance;
+    public double balance;
+
+
+    public double RETURN_FEE_RATE = 0.2;
+    public double profit = 0;
+    public double fee = 0;
+    public double returnFee = 0;
+
+    public double maxProfit = 0;
+    public double maxLoss = 0;
+    public double volume = 0;
+    public double quantity = 0;
+
+    public int openCount = 0;
+    public int closeCount = 0;
+    public int stopLossCount = 0;
+    public int succeedCount = 0;
+    public int failedCount = 0;
+    public boolean cloned;
+    List<OrderRecord> orders = new ArrayList<>();
 
     public OrderTrace(double balance) {
         this.balance = balance;
     }
-
-    double RETURN_FEE_RATE = 0.2;
-    double profit = 0;
-    double fee = 0;
-    double returnFee = 0;
-
-    double maxProfit = 0;
-    double maxLoss = 0;
-    double volume = 0;
-    double quantity = 0;
-
-    int openCount = 0;
-    int closeCount = 0;
-    int stopLossCount = 0;
-    int succeedCount = 0;
-    int failedCount = 0;
-    boolean cloned;
-    List<OrderRecord> orders = new ArrayList<>();
 
     public void addOrder(OrderRecord order) {
         this.orders.add(order);

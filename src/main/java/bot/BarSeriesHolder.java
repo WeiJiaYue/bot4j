@@ -6,9 +6,7 @@ import org.ta4j.core.BaseBarSeriesBuilder;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,8 +14,6 @@ import java.util.Map;
  */
 public class BarSeriesHolder {
     public final static BarSeries BAR_SERIES = new BaseBarSeriesBuilder().build();
-    public final static List<Double> SMA5_SERIES = new ArrayList<>();
-    public final static List<Double> SMA10_SERIES = new ArrayList<>();
 
 
     public static void load(Map<String,Object> row){

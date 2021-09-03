@@ -23,14 +23,15 @@ public class SMABackTesting extends ExcelProcessor {
     public final static int WARMUP_COUNT = 10;
     public final static double STOP_LOSS_PERCENTAGE = 0.1;
     public final static double TAKER_FEE = 0.00040;
-    public final static CandlestickInterval interval = CandlestickInterval.FIVE_MINUTES;
-    public static double BALANCE = 10000;
-    public static double INITIAL_BALANCE = 10000;
+    public final static CandlestickInterval interval = CandlestickInterval.ONE_MINUTE;
+    public static double BALANCE = 1000;
+    public static double INITIAL_BALANCE = 1000;
+    private final static String symbol = "SOLUSDT";
 
 
     public static void main(String[] args) throws Exception {
 
-        String filename = interval.val();
+        String filename = interval.val() + symbol;
 
         //init series
         SMABackTesting processor = new SMABackTesting(SnapshotGenerator.FILE_PATH, filename + ".xls");
@@ -163,7 +164,7 @@ public class SMABackTesting extends ExcelProcessor {
                 row.put("StopLoss", 0);
                 row.put("Txid", currentPosition.id);
 
-                double newBalance =current.getLowPrice().doubleValue() * currentPosition.volume;
+                double newBalance = current.getLowPrice().doubleValue() * currentPosition.volume;
                 double closeFee = newBalance * TAKER_FEE;
                 double closeNetProfit = newBalance - BALANCE - closeFee;
                 BALANCE = BALANCE + closeNetProfit;

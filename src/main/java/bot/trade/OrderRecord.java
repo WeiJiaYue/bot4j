@@ -7,23 +7,23 @@ import java.time.ZonedDateTime;
  * Created by louisyuu on 2021/8/30 3:30 下午
  */
 public class OrderRecord {
-    double balance = -1;
+    public double balance = -1;
 
-    String txid;
-    Ops ops;
-    double point;
-    double lastPrice;
-    double stopLoss = -1;
-    double volume = 0;
-    double quantity = 0;
-    double profit = 0;
-    double fee = 0;
-    String time;
-    long timestamp;
+    public String txid;
+    public Ops ops;
+    public double point;
+    public double lastPrice;
+    public double stopLoss = -1;
+    public double volume = 0;
+    public double quantity = 0;
+    public double profit = 0;
+    public double fee = 0;
+    public String time;
+    public long timestamp;
 
-    ZonedDateTime bar;
-    double ma5 = -1;
-    double ma10 = -1;
+    public ZonedDateTime bar;
+    public double ma5 = -1;
+    public double ma10 = -1;
 
     private OrderRecord() {
     }
@@ -132,7 +132,7 @@ public class OrderRecord {
                 '}';
     }
 
-    enum Ops {
+    public enum Ops {
         //多
         Long,
         //空

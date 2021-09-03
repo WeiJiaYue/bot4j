@@ -24,13 +24,14 @@ public class SnapshotGenerator extends ExcelProcessor {
 
 
     //Custom
-    private final static CandlestickInterval INTERVAL = CandlestickInterval.FIVE_MINUTES;
+    private final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
+    private final static String symbol = "SOLUSDT";
     private final static int KLINE_COUNT = 1000;
 
 
     public static void main(String[] args) throws Exception {
         SnapshotGenerator processor = new SnapshotGenerator(FILE_PATH, CANDLESTICK_TEMPLE_FILE_NAME);
-        processor.setNewFileName(INTERVAL.val());
+        processor.setNewFileName(INTERVAL.val()+symbol);
         processor.process();
     }
 
@@ -41,7 +42,7 @@ public class SnapshotGenerator extends ExcelProcessor {
 
     private List<Candlestick> getCandlestick() {
         SyncRequestClient syncRequestClient = SyncRequestClient.create();
-        return syncRequestClient.getCandlestick("BTCUSDT",
+        return syncRequestClient.getCandlestick(symbol,
                 INTERVAL,
                 null,
                 null, KLINE_COUNT);
