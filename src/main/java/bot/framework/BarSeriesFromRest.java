@@ -2,7 +2,6 @@ package bot.framework;
 
 import com.binance.client.model.enums.CandlestickInterval;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBarSeriesBuilder;
 
 /**
  * Created by louisyuu on 2021/9/6 3:09 下午

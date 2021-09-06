@@ -34,10 +34,10 @@ public class SmaTradingExecutor extends TradingExecutor {
     @Override
     public double getStopLoss(Bar latestBar, int latestIdx, TradingOps ops) {
         if (StrategyType.ONLY_LONG.equals(strategyType)) {
-            return Helper.getStopLossWhenLong(getSource().getBarSeries(), ops.marketPrice,
+            return TradingHelper.getStopLossWhenLong(getSource().getBarSeries(), ops.marketPrice,
                     STOP_LOSS_OFFSET, LOSS_LESS, STOP_LOSS_PERCENTAGE, latestIdx);
         } else {
-            return Helper.getStopLossWhenShort(getSource().getBarSeries(), ops.marketPrice,
+            return TradingHelper.getStopLossWhenShort(getSource().getBarSeries(), ops.marketPrice,
                     STOP_LOSS_OFFSET, LOSS_LESS, STOP_LOSS_PERCENTAGE, latestIdx);
         }
     }

@@ -23,8 +23,12 @@ public class SmaLongLivingTest extends SmaTradingExecutor {
 
     public static void main(String[] args) {
         SmaTradingExecutor executor = new SmaTradingExecutor(ORDER_TRACE, STRATEGY_TYPE, new BarSeriesFromStream(SYMBOL, INTERVAL, HISTORICAL_KLINES));
-        Helper.enableShutdownOrderTraceMonitor(executor, ORDER_TRACE);
-        Helper.enableCLIMonitor(executor, ORDER_TRACE);
+
+        executor.execute();
+
+
+        TradingHelper.enableShutdownOrderTraceMonitor(executor, ORDER_TRACE);
+        TradingHelper.enableCLIMonitor(executor, ORDER_TRACE);
     }
 
 

@@ -23,25 +23,21 @@ public abstract class TradingExecutor {
         this.orderTrace = orderTrace;
         this.strategyType = strategyType;
         this.source = source;
-
-        execute();
     }
 
 
-    public void execute() {
-        //Init bar series
-        source.process();
+    public synchronized void execute() {
         while (!source.isStandby()) {
             print("Waiting for bar series source preparing");
             try {
-                Thread.sleep(500L);
+                Thread.sleep(1000L);
             } catch (InterruptedException e) {
 
             }
         }
         print(source.getClass().getSimpleName() + " is standby......");
 
-        //Back test
+        //Execute back test
         if (!source.isLivingStream()) {
             BarSeries barSeries = source.getBarSeries();
             for (int i = 0; i <= barSeries.getEndIndex(); i++) {
@@ -52,7 +48,7 @@ public abstract class TradingExecutor {
                 double closePriceAsLastPrice = currentBar.getClosePrice().doubleValue();
                 doExecute(barSeries.getBar(i), i, closePriceAsLastPrice);
             }
-        } else { //Real time trading
+        } else {//Execute real time trading
             BarSeriesFromStream stream = (BarSeriesFromStream) source;
             stream.addLatestBarListener(this::doExecute);
             stream.addLivingListener(this::doExecute);
@@ -67,18 +63,18 @@ public abstract class TradingExecutor {
 
             double stopLoss = getStopLoss(latestBar, latestIdx, ops);
 
-            OrderRecord order = Helper.open(ops.ops, orderTrace, String.valueOf(latestIdx),
+            OrderRecord order = TradingHelper.open(ops.ops, orderTrace, String.valueOf(latestIdx),
                     ops.marketPrice, stopLoss, lastPrice, latestBar.getEndTime());
             //Open position
             setCurrentPosition(order);
         } else if (shouldExit(latestBar, latestIdx, lastPrice)) {
             TradingOps ops = getOps("close", lastPrice);
-            Helper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
+            TradingHelper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
             //Close position
             setCurrentPosition(null);
         } else if (shouldStopLoss(latestBar, latestIdx, lastPrice)) {
             TradingOps ops = getOps("stopLoss", lastPrice);
-            Helper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
+            TradingHelper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
             //Close position
             setCurrentPosition(null);
         }
@@ -124,17 +120,17 @@ public abstract class TradingExecutor {
             return marketPrice;
         }
         if (OrderRecord.Ops.Long.equals(ops)) {
-            return Helper.getLongMarketPrice(source.symbol());
+            return TradingHelper.getLongMarketPrice(source.symbol());
         } else if (OrderRecord.Ops.Short.equals(ops)) {
-            return Helper.getShortMarketPrice(source.symbol());
+            return TradingHelper.getShortMarketPrice(source.symbol());
         } else if (OrderRecord.Ops.CloseLong.equals(ops)) {
-            return Helper.getShortMarketPrice(source.symbol());
+            return TradingHelper.getShortMarketPrice(source.symbol());
         } else if (OrderRecord.Ops.CloseShort.equals(ops)) {
-            return Helper.getLongMarketPrice(source.symbol());
+            return TradingHelper.getLongMarketPrice(source.symbol());
         } else if (OrderRecord.Ops.StopLossLong.equals(ops)) {
-            return Helper.getShortMarketPrice(source.symbol());
+            return TradingHelper.getShortMarketPrice(source.symbol());
         } else if (OrderRecord.Ops.StopLossShort.equals(ops)) {
-            return Helper.getLongMarketPrice(source.symbol());
+            return TradingHelper.getLongMarketPrice(source.symbol());
         } else {
             throw new IllegalArgumentException("Wrong ops " + ops);
         }

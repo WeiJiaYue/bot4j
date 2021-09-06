@@ -6,17 +6,17 @@ import com.binance.client.model.enums.CandlestickInterval;
 /**
  * Created by louisyuu on 2021/9/6 4:31 下午
  */
-public class SmaLongBackTest extends SmaTradingExecutor {
+public class SmaShortBackTest extends SmaTradingExecutor {
 
-    public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
-    public static String SYMBOL = "FILUSDT";
+    public static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
+    public static String SYMBOL = "AXSUSDT";
     public static int HISTORICAL_KLINES = 1000;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);
-    public final static StrategyType STRATEGY_TYPE = StrategyType.ONLY_LONG;
+    public final static StrategyType STRATEGY_TYPE = StrategyType.ONLY_SHORT;
 
 
-    public SmaLongBackTest(OrderTrace orderTrace, StrategyType strategyType, BarSeriesSource source) {
+    public SmaShortBackTest(OrderTrace orderTrace, StrategyType strategyType, BarSeriesSource source) {
         super(orderTrace, strategyType, source);
     }
 

@@ -38,6 +38,9 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
         this.interval = interval;
         this.initKLineCount = initKLineCount;
         this.symbol = symbol;
+
+        //init bar series
+        this.process();
     }
 
 

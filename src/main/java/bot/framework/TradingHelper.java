@@ -19,10 +19,9 @@ import static bot.utils.DateUtil.printHighlight;
 /**
  * Created by louisyuu on 2021/9/3 2:38 下午
  */
-public class Helper {
+public class TradingHelper {
 
     static SyncRequestClient restClient = SyncRequestClient.create();
-
 
 
     public static OrderRecord open(OrderRecord.Ops ops, OrderTrace orderTrace,
@@ -117,9 +116,15 @@ public class Helper {
 
 
     public static void enableShutdownOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
-        Runtime.getRuntime().addShutdownHook(new Thread(
-                new OrderTraceRunnable("ShutdownMonitor", orderTrace, smaTradingExecutor, true)));
+        enableShutdownOrderTraceMonitor(smaTradingExecutor, orderTrace, true);
     }
+
+
+    public static void enableShutdownOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace, boolean dump) {
+        Runtime.getRuntime().addShutdownHook(new Thread(
+                new OrderTraceRunnable("ShutdownMonitor", orderTrace, smaTradingExecutor, dump)));
+    }
+
 
     public static void enableScheduledOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
@@ -161,9 +166,6 @@ public class Helper {
             }
         }
     }
-
-
-
 
 
     public static double getLongMarketPrice(String symbol) {
