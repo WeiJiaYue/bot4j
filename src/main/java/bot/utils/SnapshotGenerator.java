@@ -1,7 +1,7 @@
-package bot;
+package bot.utils;
 
-import bot.excel.ExcelProcessor;
-import bot.excel.ExcelTable;
+import bot.utils.excel.ExcelProcessor;
+import bot.utils.excel.ExcelTable;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.Candlestick;

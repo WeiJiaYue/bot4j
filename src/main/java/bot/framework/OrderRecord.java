@@ -1,4 +1,4 @@
-package bot.trade;
+package bot.framework;
 
 
 import java.time.ZonedDateTime;
@@ -22,8 +22,7 @@ public class OrderRecord {
     public long timestamp;
 
     public ZonedDateTime bar;
-    public double ma5 = -1;
-    public double ma10 = -1;
+
 
     private OrderRecord() {
     }
@@ -100,16 +99,6 @@ public class OrderRecord {
         return this;
     }
 
-    public OrderRecord ma5(double ma5) {
-        this.ma5 = ma5;
-        return this;
-    }
-
-    public OrderRecord ma10(double ma10) {
-        this.ma10 = ma10;
-        return this;
-    }
-
 
     @Override
     public String toString() {
@@ -126,8 +115,6 @@ public class OrderRecord {
                 ", fee:" + fee +
                 ", time:'" + time + '\'' +
                 ", timestamp:" + timestamp +
-                ", ma5:" + ma5 +
-                ", ma10:" + ma10 +
                 " \nAt kline=" + bar +
                 '}';
     }
@@ -198,14 +185,6 @@ public class OrderRecord {
 
     public ZonedDateTime getBar() {
         return bar;
-    }
-
-    public double getMa5() {
-        return ma5;
-    }
-
-    public double getMa10() {
-        return ma10;
     }
 
 

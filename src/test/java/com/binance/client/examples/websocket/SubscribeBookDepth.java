@@ -1,6 +1,6 @@
 package com.binance.client.examples.websocket;
 
-import bot.DateUtil;
+import bot.utils.DateUtil;
 import com.binance.client.SubscriptionClient;
 
 public class SubscribeBookDepth {

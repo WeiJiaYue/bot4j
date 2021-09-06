@@ -1,4 +1,4 @@
-package bot;
+package bot.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

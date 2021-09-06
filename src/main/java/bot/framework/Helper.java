@@ -1,20 +1,28 @@
-package bot.mock;
+package bot.framework;
 
-import bot.DateUtil;
-import bot.trade.OrderRecord;
-import bot.trade.OrderTrace;
+import bot.utils.DateUtil;
+import com.alibaba.fastjson.JSON;
+import com.binance.client.SyncRequestClient;
+import com.binance.client.model.market.OrderBook;
+import org.apache.commons.lang3.StringUtils;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
 import java.time.ZonedDateTime;
+import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static bot.Constants.TAKER_FEE;
-import static bot.DateUtil.printHighlight;
+import static bot.utils.Constants.TAKER_FEE;
+import static bot.utils.DateUtil.printHighlight;
 
 /**
  * Created by louisyuu on 2021/9/3 2:38 下午
  */
-public class OrderHelpers {
+public class Helper {
+
+    static SyncRequestClient restClient = SyncRequestClient.create();
+
 
 
     public static OrderRecord open(OrderRecord.Ops ops, OrderTrace orderTrace,
@@ -96,7 +104,7 @@ public class OrderHelpers {
         //default stopLossOffset is 5
         for (int i = stopLossIdx; i > stopLossIdx - stopLossOffset; i--) {
             Bar pre = barSeries.getBar(i);
-            double other = pre.getLowPrice().doubleValue();
+            double other = pre.getHighPrice().doubleValue();
             stopLoss = Math.max(stopLoss, other);
         }
         if (lossLess) {
@@ -105,6 +113,67 @@ public class OrderHelpers {
             stopLoss = Math.max(stopLoss, openPrice * (1 + stopLossPercentage));
         }
         return stopLoss;
+    }
+
+
+    public static void enableShutdownOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+        Runtime.getRuntime().addShutdownHook(new Thread(
+                new OrderTraceRunnable("ShutdownMonitor", orderTrace, smaTradingExecutor, true)));
+    }
+
+    public static void enableScheduledOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
+                new OrderTraceRunnable("ScheduledMonitor", orderTrace, smaTradingExecutor, false),
+                10,
+                10,
+                TimeUnit.SECONDS);
+    }
+
+
+    public static void enableCLIMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+        Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
+        while (scan.hasNextLine()) {
+            try {
+                String instruction = scan.nextLine();
+                if (StringUtils.isBlank(instruction)) {
+                    continue;
+                }
+                if ("help".equalsIgnoreCase(instruction)) {
+                    System.err.println("Current supported instructions are:");
+                    System.err.println("Snapshot");
+                    System.err.println("SnapshotDump");
+                    System.err.println("PeekSize");
+                    System.err.println("PeekOrders");
+                } else if ("Snapshot".equalsIgnoreCase(instruction)) {
+                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, smaTradingExecutor, false)).start();
+                } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
+                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, smaTradingExecutor, true)).start();
+                } else if ("PeekSize".equalsIgnoreCase(instruction)) {
+                    printHighlight("Current trading order size :" + orderTrace.getOrders().size());
+                } else if ("PeekOrders".equalsIgnoreCase(instruction)) {
+                    printHighlight("Current trading orders :" + JSON.toJSONString(orderTrace.getOrders()));
+                } else {
+                    System.err.println("Wrong instruction!!!");
+                }
+            } catch (Exception e) {
+                printHighlight("CLI exception!!!");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
+
+    public static double getLongMarketPrice(String symbol) {
+        OrderBook book = restClient.getOrderBook(symbol.toUpperCase(), null);
+        return Double.parseDouble(String.valueOf(book.getAsks().get(0).getPrice()));
+    }
+
+    public static double getShortMarketPrice(String symbol) {
+        OrderBook book = restClient.getOrderBook(symbol.toUpperCase(), null);
+        return Double.parseDouble(String.valueOf(book.getBids().get(0).getPrice()));
     }
 
 

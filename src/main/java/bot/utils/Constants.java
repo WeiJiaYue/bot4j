@@ -1,4 +1,4 @@
-package bot;
+package bot.utils;
 
 import com.binance.client.model.enums.CandlestickInterval;
 

@@ -1,9 +1,8 @@
-package bot.trade;
+package bot.framework;
 
-import bot.BarLivingStream;
-import bot.SnapshotGenerator;
-import bot.excel.ExcelProcessor;
-import bot.excel.ExcelTable;
+import bot.utils.SnapshotGenerator;
+import bot.utils.excel.ExcelProcessor;
+import bot.utils.excel.ExcelTable;
 import com.alibaba.fastjson.JSONObject;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
@@ -12,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static bot.DateUtil.printHighlight;
+import static bot.utils.DateUtil.printHighlight;
 
 /**
  * Created by louisyuu on 2021/8/27 3:22 下午
@@ -121,7 +120,7 @@ public class OrderTrace implements Cloneable {
     }
 
 
-    public void dump(BarLivingStream livingStream, BarSeries barSeries) {
+    public void dump(SmaTradingExecutor smaTradingExecutor) {
         OrderTrace snapshot = snapshot();
         new ExcelProcessor(SnapshotGenerator.FILE_PATH) {
             @Override
@@ -137,7 +136,9 @@ public class OrderTrace implements Cloneable {
 
             @Override
             public void doProcess(ExcelTable table) throws Exception {
-                for (int i = 0; i <= barSeries.getEndIndex(); i++) {
+                BarSeries barSeries = smaTradingExecutor.getSource().getBarSeries();
+
+                for (int i = 0; i <= smaTradingExecutor.getSource().getBarSeries().getEndIndex(); i++) {
                     Bar bar = barSeries.getBar(i);
                     Map<String, Object> row = table.createEmptyRow();
                     row.put("Date", bar.getEndTime());
@@ -146,8 +147,8 @@ public class OrderTrace implements Cloneable {
                     row.put("C", String.valueOf(bar.getClosePrice()));
                     row.put("L", String.valueOf(bar.getLowPrice()));
                     row.put("V", String.valueOf(bar.getVolume()));
-                    row.put("MA5", String.valueOf(livingStream.getSma5Indicator().getValue(i).doubleValue()));
-                    row.put("MA10", String.valueOf(livingStream.getSma10Indicator().getValue(i).doubleValue()));
+                    row.put("MA5", String.valueOf(smaTradingExecutor.getShortSmaIndicator().getValue(i).doubleValue()));
+                    row.put("MA10", String.valueOf(smaTradingExecutor.getLongSmaIndicator().getValue(i).doubleValue()));
                     table.addRow(row);
                     List<OrderRecord> orders = snapshot.getOrdersByDate(bar.getEndTime());
                     if (orders != null && !orders.isEmpty()) {
