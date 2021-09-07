@@ -9,7 +9,7 @@ import com.binance.client.model.enums.CandlestickInterval;
 public class SmaLongLivingTest extends SmaTradingExecutor {
 
     public static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
-    public static String SYMBOL = "BTCUSDT";
+    public static String SYMBOL = "SUSHIUSDT";
     public static int HISTORICAL_KLINES = 100;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);

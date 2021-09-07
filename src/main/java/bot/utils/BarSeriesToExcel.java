@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by louisyuu on 2021/8/13 5:34 下午
  */
-public class SnapshotGenerator extends ExcelProcessor {
+public class BarSeriesToExcel extends ExcelProcessor {
 
     public final static String PROJECT_PATH = System.getProperty("user.dir");
     public final static String SRC_PATH = "/src/main/java/bot/file/";
@@ -30,13 +30,13 @@ public class SnapshotGenerator extends ExcelProcessor {
 
 
     public static void main(String[] args) throws Exception {
-        SnapshotGenerator processor = new SnapshotGenerator(FILE_PATH, CANDLESTICK_TEMPLE_FILE_NAME);
+        BarSeriesToExcel processor = new BarSeriesToExcel(FILE_PATH, CANDLESTICK_TEMPLE_FILE_NAME);
         processor.setNewFileName(INTERVAL.val()+symbol);
         processor.process();
     }
 
 
-    public SnapshotGenerator(String filepath, String filename) {
+    public BarSeriesToExcel(String filepath, String filename) {
         super(filepath, filename);
     }
 

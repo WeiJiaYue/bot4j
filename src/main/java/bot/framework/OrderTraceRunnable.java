@@ -1,6 +1,12 @@
 package bot.framework;
 
 
+import bot.utils.DateUtil;
+import org.ta4j.core.Bar;
+import org.ta4j.core.BarSeries;
+
+import java.time.format.DateTimeFormatterBuilder;
+
 import static bot.utils.DateUtil.printHighlight;
 
 
@@ -31,7 +37,14 @@ public class OrderTraceRunnable implements Runnable {
                 snapshot.dump(smaTradingExecutor);
             }
         }
+        BarSeries barSeries = smaTradingExecutor.getSource().getBarSeries();
+        Bar firstBar = barSeries.getFirstBar();
+        Bar lastBar = barSeries.getLastBar();
+        printHighlight("Date range " + DateUtil.convertToString(firstBar.getEndTime()) + " to " + DateUtil.convertToString(lastBar.getEndTime()));
+        printHighlight("Symbol " + smaTradingExecutor.getSource().symbol() + " with kline " + smaTradingExecutor.getSource().interval());
         snapshot.snapshot(caller);
+
+
     }
 
 

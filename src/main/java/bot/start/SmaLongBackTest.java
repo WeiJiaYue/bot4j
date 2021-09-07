@@ -8,9 +8,9 @@ import com.binance.client.model.enums.CandlestickInterval;
  */
 public class SmaLongBackTest extends SmaTradingExecutor {
 
-    public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
-    public static String SYMBOL = "FILUSDT";
-    public static int HISTORICAL_KLINES = 1000;
+    public static CandlestickInterval INTERVAL = CandlestickInterval.FOUR_HOURLY;
+    public static String SYMBOL = "DOTUSDT";
+    public static int HISTORICAL_KLINES = 400;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);
     public final static StrategyType STRATEGY_TYPE = StrategyType.ONLY_LONG;

@@ -31,7 +31,6 @@ public class BarSeriesFromExcel extends GenericBarSeriesSource {
     }
 
 
-
     @Override
     public boolean isLivingStream() {
         return false;
@@ -53,6 +52,6 @@ public class BarSeriesFromExcel extends GenericBarSeriesSource {
                     barSeries.addBar(zonedDateTime, open, high, low, close, volume);
                 }
             }
-        }
+        }.process();
     }
 }

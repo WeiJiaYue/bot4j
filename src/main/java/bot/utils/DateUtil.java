@@ -1,6 +1,9 @@
 package bot.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -22,8 +25,13 @@ public class DateUtil {
     }
 
 
+    public static String convertToString(ZonedDateTime zonedDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS).withZone(ZoneId.systemDefault());
+        return zonedDateTime.format(formatter);
+    }
 
-        public static void print(String text) {
+
+    public static void print(String text) {
         System.out.println(getCurrentDateTime() + " ==> " + text);
     }
 
