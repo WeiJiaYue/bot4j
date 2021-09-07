@@ -77,11 +77,14 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
         print("Get KLines from exchange......");
         List<Candlestick> candlesticks;
         if (isLivingStream()) {
+            print(this.getClass().getSimpleName() + " is using kline limits for initializing klines......");
             candlesticks = TradingHelper.getCandlesticks(symbol, interval, initKLineCount);
         } else {
             if (interval.isUsePeriod()) {
+                print(this.getClass().getSimpleName() + " is using periods for initializing klines......");
                 candlesticks = TradingHelper.getCandlesticks(symbol, interval, interval.unit(), shiftAmount, initKLineCount, new Date(), stopDate);
             } else {
+                print(this.getClass().getSimpleName() + " is using kline limits for initializing klines......");
                 candlesticks = TradingHelper.getCandlesticks(symbol, interval, initKLineCount);
             }
         }

@@ -53,5 +53,6 @@ public class BarSeriesFromExcel extends GenericBarSeriesSource {
                 }
             }
         }.process();
+        setStandby(true);
     }
 }

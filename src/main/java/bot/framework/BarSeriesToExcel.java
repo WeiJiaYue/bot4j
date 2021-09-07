@@ -1,5 +1,6 @@
 package bot.framework;
 
+import bot.start.SmaBackTest;
 import bot.utils.Constants;
 import bot.utils.DateUtil;
 import bot.utils.excel.ExcelProcessor;
@@ -15,19 +16,17 @@ import java.util.*;
 public class BarSeriesToExcel extends ExcelProcessor {
 
     //Customs
-    public final static CandlestickInterval INTERVAL = CandlestickInterval.ONE_MINUTE;
+    public final static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
     public final static String SYMBOL = "BTCUSDT";
     public final static int KLINE_LIMITS = 1500;
     //Use period for init klines
     public final static int AMOUNT = 500;
-    public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "09", "05", "08");
-
-    public final static String FILE_NAME = SYMBOL + "-" + INTERVAL.name();
+    public final static Date STOP_DATE = SmaBackTest.STOP_DATE;
 
 
     public static void main(String[] args) throws Exception {
         BarSeriesToExcel processor = new BarSeriesToExcel(Constants.FILE_PATH);
-        processor.setNewFileName(FILE_NAME);
+        processor.setNewFileName(Constants.FILE_NAME(SYMBOL, INTERVAL));
         processor.process();
     }
 

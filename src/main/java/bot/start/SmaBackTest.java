@@ -13,13 +13,13 @@ import java.util.Date;
 public class SmaBackTest extends SmaTradingExecutor {
 
     //Customs
-    public static CandlestickInterval INTERVAL = CandlestickInterval.FIVE_MINUTES;
+    public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
     public static String SYMBOL = "BTCUSDT";
-    public static int HISTORICAL_KLINES = 400;
+    public static int HISTORICAL_KLINES = 1500;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);
     public final static StrategyType STRATEGY_TYPE = StrategyType.ONLY_LONG;
-    public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "06", "30", "08");
+    public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "09", "01", "08");
     public final static int SHIFT_AMOUNT = 500;
 
 
@@ -51,10 +51,8 @@ public class SmaBackTest extends SmaTradingExecutor {
 
 
     public static void backTestWithExcelSource() {
-        GenericBarSeriesSource barSeriesSource = new BarSeriesFromExcel(Constants.FILE_PATH, Constants.FILE_NAME(SYMBOL, INTERVAL),
+        GenericBarSeriesSource barSeriesSource = new BarSeriesFromExcel(Constants.FILE_PATH, Constants.FILE_NAME(SYMBOL, INTERVAL)+".xls",
                 SYMBOL, INTERVAL, HISTORICAL_KLINES);
-        barSeriesSource.setStopDate(STOP_DATE);
-        barSeriesSource.setShiftAmount(SHIFT_AMOUNT);
         //Enable
         barSeriesSource.enableSource();
         SmaTradingExecutor executor
