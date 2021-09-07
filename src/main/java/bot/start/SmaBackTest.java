@@ -13,12 +13,15 @@ import java.util.Date;
 public class SmaBackTest extends SmaTradingExecutor {
 
     //Customs
-    public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
     public static String SYMBOL = "BTCUSDT";
-    public static int HISTORICAL_KLINES = 1500;
+    public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);
     public final static StrategyType STRATEGY_TYPE = StrategyType.ONLY_LONG;
+
+
+    //
+    public static int KLINE_LIMITS = 1500;
     public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "09", "01", "08");
     public final static int SHIFT_AMOUNT = 500;
 
@@ -37,7 +40,7 @@ public class SmaBackTest extends SmaTradingExecutor {
 
 
     public static void backTestWithRestSource() {
-        GenericBarSeriesSource barSeriesSource = new BarSeriesFromRest(SYMBOL, INTERVAL, HISTORICAL_KLINES);
+        GenericBarSeriesSource barSeriesSource = new BarSeriesFromRest(SYMBOL, INTERVAL, KLINE_LIMITS);
         barSeriesSource.setStopDate(STOP_DATE);
         barSeriesSource.setShiftAmount(SHIFT_AMOUNT);
         //Enable
@@ -51,8 +54,8 @@ public class SmaBackTest extends SmaTradingExecutor {
 
 
     public static void backTestWithExcelSource() {
-        GenericBarSeriesSource barSeriesSource = new BarSeriesFromExcel(Constants.FILE_PATH, Constants.FILE_NAME(SYMBOL, INTERVAL)+".xls",
-                SYMBOL, INTERVAL, HISTORICAL_KLINES);
+        GenericBarSeriesSource barSeriesSource = new BarSeriesFromExcel(Constants.FILE_PATH, Constants.FILE_NAME(SYMBOL, INTERVAL) + ".xls",
+                SYMBOL, INTERVAL, KLINE_LIMITS);
         //Enable
         barSeriesSource.enableSource();
         SmaTradingExecutor executor
