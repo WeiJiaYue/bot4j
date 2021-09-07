@@ -1,6 +1,6 @@
 package bot.framework;
 
-import bot.utils.BarSeriesToExcel;
+import bot.utils.Constants;
 import bot.utils.excel.ExcelProcessor;
 import bot.utils.excel.ExcelTable;
 import com.alibaba.fastjson.JSONObject;
@@ -122,7 +122,7 @@ public class OrderTrace implements Cloneable {
 
     public void dump(SmaTradingExecutor smaTradingExecutor) {
         OrderTrace snapshot = snapshot();
-        new ExcelProcessor(BarSeriesToExcel.FILE_PATH) {
+        new ExcelProcessor(Constants.FILE_PATH) {
             @Override
             protected ExcelTable getExcelTable() {
                 ExcelTable table = new ExcelTable();

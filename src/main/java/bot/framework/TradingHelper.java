@@ -3,17 +3,20 @@ package bot.framework;
 import bot.utils.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.binance.client.SyncRequestClient;
+import com.binance.client.model.enums.CandlestickInterval;
+import com.binance.client.model.market.Candlestick;
 import com.binance.client.model.market.OrderBook;
 import org.apache.commons.lang3.StringUtils;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
 import java.time.ZonedDateTime;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static bot.utils.Constants.TAKER_FEE;
+import static bot.utils.DateUtil.print;
 import static bot.utils.DateUtil.printHighlight;
 
 /**
@@ -24,7 +27,7 @@ public class TradingHelper {
     static SyncRequestClient restClient = SyncRequestClient.create();
 
 
-    public static OrderRecord open(OrderRecord.Ops ops, OrderTrace orderTrace,
+    public static OrderRecord open(boolean isStream, OrderRecord.Ops ops, OrderTrace orderTrace,
                                    String txid, double openPrice, double stopLoss, double lastPrice,
                                    ZonedDateTime endTime) {
         OrderRecord order = OrderRecord.build();
@@ -42,12 +45,14 @@ public class TradingHelper {
                 .time(DateUtil.getCurrentDateTime())
                 .timestamp(System.currentTimeMillis());
         orderTrace.addOrder(order);
-        printHighlight(order.ops + " order:" + order);
+        if (isStream) {
+            printHighlight(order.ops + " :" + order);
+        }
         return order;
     }
 
 
-    public static OrderRecord close(OrderRecord.Ops ops, OrderTrace orderTrace, OrderRecord currentPosition,
+    public static OrderRecord close(boolean isStream, OrderRecord.Ops ops, OrderTrace orderTrace, OrderRecord currentPosition,
                                     double closePrice, double lastPrice, ZonedDateTime endTime) {
         OrderRecord order = OrderRecord.build();
         order.txid(currentPosition.txid)
@@ -71,7 +76,9 @@ public class TradingHelper {
                 .time(DateUtil.getCurrentDateTime())
                 .timestamp(System.currentTimeMillis());
         orderTrace.addOrder(order);
-        printHighlight(order.ops + " order :" + order);
+        if (isStream) {
+            printHighlight(order.ops + " :" + order);
+        }
         return order;
     }
 
@@ -178,5 +185,34 @@ public class TradingHelper {
         return Double.parseDouble(String.valueOf(book.getBids().get(0).getPrice()));
     }
 
+
+    public static List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval,
+                                                    int unit, int amount, int klineLimits, Date baseDate, Date stopDate) {
+
+        List<DateUtil.HistoricalDateTime> historicalDateTimes = DateUtil.getHistoricalDateTimes(unit, amount, baseDate, stopDate);
+        print("Start to call kline api " + historicalDateTimes.size() + " times in a loop for initializing klines......");
+        List<Candlestick> results = new ArrayList<>();
+        for (DateUtil.HistoricalDateTime date : historicalDateTimes) {
+            List<Candlestick> candlestick = restClient.getCandlestick(
+                    symbol,
+                    interval,
+                    date.timestamp,
+                    date.baseTimestamp,
+                    klineLimits);
+
+            results.addAll(candlestick);
+        }
+        return results;
+    }
+
+
+    public static List<Candlestick> getCandlesticks(String symbol, CandlestickInterval interval, int klineLimits) {
+        return restClient.getCandlestick(
+                symbol,
+                interval,
+                null,
+                null,
+                klineLimits);
+    }
 
 }

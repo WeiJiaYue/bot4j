@@ -14,7 +14,7 @@ public interface BarSeriesSource {
 
     boolean isLivingStream();
 
-    void process();
+    void enableSource();
 
     String symbol();
 

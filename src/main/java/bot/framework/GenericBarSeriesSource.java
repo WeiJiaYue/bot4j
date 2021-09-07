@@ -26,6 +26,8 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
     protected final int initKLineCount;
     protected final SubscriptionClient websocketClient = SubscriptionClient.create();
     protected final SyncRequestClient restClient = SyncRequestClient.create();
+    protected Date stopDate;
+    private int shiftAmount;
     protected volatile boolean standby;
 
 
@@ -38,9 +40,6 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
         this.interval = interval;
         this.initKLineCount = initKLineCount;
         this.symbol = symbol;
-
-        //init bar series
-        this.process();
     }
 
 
@@ -74,9 +73,19 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
 
 
     public void initialHistoricalKLines() {
-        List<Candlestick> candlesticks = getCandlestick();
         System.out.println();
-        print("KLine bar initialization is starting......");
+        print("Get KLines from exchange......");
+        List<Candlestick> candlesticks;
+        if (isLivingStream()) {
+            candlesticks = TradingHelper.getCandlesticks(symbol, interval, initKLineCount);
+        } else {
+            if (interval.isUsePeriod()) {
+                candlesticks = TradingHelper.getCandlesticks(symbol, interval, interval.unit(), shiftAmount, initKLineCount, new Date(), stopDate);
+            } else {
+                candlesticks = TradingHelper.getCandlesticks(symbol, interval, initKLineCount);
+            }
+        }
+        print("BarSeries initialization is starting......");
         for (int i = 0; i < candlesticks.size(); i++) {
             Candlestick candlestick = candlesticks.get(i);
             Date closeDateTime = new Date(candlestick.getCloseTime());
@@ -113,5 +122,21 @@ public abstract class GenericBarSeriesSource implements BarSeriesSource {
 
     public void setStandby(boolean standby) {
         this.standby = standby;
+    }
+
+    public Date getStopDate() {
+        return stopDate;
+    }
+
+    public void setStopDate(Date stopDate) {
+        this.stopDate = stopDate;
+    }
+
+    public int getShiftAmount() {
+        return shiftAmount;
+    }
+
+    public void setShiftAmount(int shiftAmount) {
+        this.shiftAmount = shiftAmount;
     }
 }

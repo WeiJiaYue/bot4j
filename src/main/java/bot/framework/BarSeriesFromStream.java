@@ -34,7 +34,7 @@ public class BarSeriesFromStream extends GenericBarSeriesSource {
     }
 
     @Override
-    public void process() {
+    public void enableSource() {
         initialHistoricalKLines();
         streamKLines();
     }

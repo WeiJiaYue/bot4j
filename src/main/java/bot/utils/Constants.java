@@ -1,5 +1,6 @@
 package bot.utils;
 
+import bot.utils.excel.ExcelTable;
 import com.binance.client.model.enums.CandlestickInterval;
 
 /**
@@ -11,10 +12,14 @@ public interface Constants {
     String PROJECT_PATH = System.getProperty("user.dir");
     String SRC_PATH = "/src/main/java/bot/file/";
     String FILE_PATH = PROJECT_PATH + SRC_PATH;
-    String CANDLESTICK_TEMPLE_FILE_NAME = "CandlestickTemple.xlsx";
+    int KLINE_LIMITS = 1500;
 
 
-    CandlestickInterval MARKET_INTERVAL = CandlestickInterval.ONE_MINUTE;
-    String MARKET_SYMBOL = "BTCUSDT";
-    int INIT_KLINE_COUNT = 1000;
+    static ExcelTable getKLineTable() {
+        return new ExcelTable().addColumn("D").addColumn("T").addColumn("O").addColumn("H").addColumn("L").addColumn("C").addColumn("V");
+    }
+
+    static String FILE_NAME(String symbol, CandlestickInterval interval) {
+        return symbol + "-" + interval.name();
+    }
 }

@@ -109,7 +109,6 @@ public class SmaTradingExecutor extends TradingExecutor {
             } else {
                 comparePrice = latestBar.getHighPrice().doubleValue();
             }
-
             if (getCurrentPosition() != null && comparePrice > getCurrentPosition().stopLoss) {
                 return true;
             }

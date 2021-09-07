@@ -37,17 +37,17 @@ public class BarSeriesFromExcel extends GenericBarSeriesSource {
     }
 
     @Override
-    public void process() {
+    public void enableSource() {
         new ExcelProcessor(filepath, filename) {
             @Override
             public void doProcess(ExcelTable table) throws Exception {
                 for (Map<String, Object> row : table.getRows()) {
-                    BigDecimal open = new BigDecimal(String.valueOf(row.get("Open")));
-                    BigDecimal high = new BigDecimal(String.valueOf(row.get("High")));
-                    BigDecimal low = new BigDecimal(String.valueOf(row.get("Low")));
-                    BigDecimal close = new BigDecimal(String.valueOf(row.get("Close")));
-                    BigDecimal volume = new BigDecimal(String.valueOf(row.get("Volume")));
-                    String timestamp = String.valueOf(row.get("Timestamp"));
+                    BigDecimal open = new BigDecimal(String.valueOf(row.get("O")));
+                    BigDecimal high = new BigDecimal(String.valueOf(row.get("H")));
+                    BigDecimal low = new BigDecimal(String.valueOf(row.get("L")));
+                    BigDecimal close = new BigDecimal(String.valueOf(row.get("C")));
+                    BigDecimal volume = new BigDecimal(String.valueOf(row.get("V")));
+                    String timestamp = String.valueOf(row.get("T"));
                     ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(new Date(Long.parseLong(timestamp)).toInstant(), ZoneId.systemDefault());
                     barSeries.addBar(zonedDateTime, open, high, low, close, volume);
                 }

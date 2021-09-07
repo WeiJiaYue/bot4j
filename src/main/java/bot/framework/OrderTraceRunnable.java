@@ -41,7 +41,7 @@ public class OrderTraceRunnable implements Runnable {
         Bar firstBar = barSeries.getFirstBar();
         Bar lastBar = barSeries.getLastBar();
         printHighlight("Date range " + DateUtil.convertToString(firstBar.getEndTime()) + " to " + DateUtil.convertToString(lastBar.getEndTime()));
-        printHighlight("Symbol " + smaTradingExecutor.getSource().symbol() + " with kline " + smaTradingExecutor.getSource().interval());
+        printHighlight("Symbol " + smaTradingExecutor.getSource().symbol() + " with kline " + smaTradingExecutor.getSource().interval().name());
         snapshot.snapshot(caller);
 
 

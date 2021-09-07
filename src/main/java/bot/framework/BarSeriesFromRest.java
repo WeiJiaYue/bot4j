@@ -22,7 +22,7 @@ public class BarSeriesFromRest extends GenericBarSeriesSource {
     }
 
     @Override
-    public void process() {
+    public void enableSource() {
         initialHistoricalKLines();
         setStandby(true);
     }

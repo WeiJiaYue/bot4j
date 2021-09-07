@@ -63,18 +63,18 @@ public abstract class TradingExecutor {
 
             double stopLoss = getStopLoss(latestBar, latestIdx, ops);
 
-            OrderRecord order = TradingHelper.open(ops.ops, orderTrace, String.valueOf(latestIdx),
+            OrderRecord order = TradingHelper.open(source.isLivingStream(), ops.ops, orderTrace, String.valueOf(latestIdx),
                     ops.marketPrice, stopLoss, lastPrice, latestBar.getEndTime());
             //Open position
             setCurrentPosition(order);
         } else if (shouldExit(latestBar, latestIdx, lastPrice)) {
             TradingOps ops = getOps("close", lastPrice);
-            TradingHelper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
+            TradingHelper.close(source.isLivingStream(), ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
             //Close position
             setCurrentPosition(null);
         } else if (shouldStopLoss(latestBar, latestIdx, lastPrice)) {
             TradingOps ops = getOps("stopLoss", lastPrice);
-            TradingHelper.close(ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
+            TradingHelper.close(source.isLivingStream(), ops.ops, orderTrace, getCurrentPosition(), ops.marketPrice, lastPrice, latestBar.getEndTime());
             //Close position
             setCurrentPosition(null);
         }
