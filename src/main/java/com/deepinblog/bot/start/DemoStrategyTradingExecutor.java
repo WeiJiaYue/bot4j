@@ -51,7 +51,7 @@ public class DemoStrategyTradingExecutor extends TradingExecutor {
     public boolean shouldExit(Bar latestBar, int latestIdx, double lastPrice) {
         //你的止损平仓逻辑
 
-        if (latestIdx % 2 == 0) {
+        if (latestIdx % 2 != 0) {
             return true;
         } else {
             return false;
