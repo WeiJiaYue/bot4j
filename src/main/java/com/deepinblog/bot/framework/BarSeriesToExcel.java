@@ -1,6 +1,6 @@
 package com.deepinblog.bot.framework;
 
-import com.deepinblog.bot.start.SmaBackTest;
+import com.deepinblog.bot.start.DemoMain;
 import com.deepinblog.bot.utils.Constants;
 import com.deepinblog.bot.utils.DateUtil;
 import com.deepinblog.bot.utils.excel.ExcelProcessor;
@@ -20,12 +20,12 @@ import static com.deepinblog.bot.utils.DateUtil.printHighlight;
 public class BarSeriesToExcel extends ExcelProcessor {
 
     //Customs
-    public final static CandlestickInterval INTERVAL = SmaBackTest.INTERVAL;
-    public final static String SYMBOL = SmaBackTest.SYMBOL;
-    public final static int KLINE_LIMITS = SmaBackTest.KLINE_LIMITS;
+    public final static CandlestickInterval INTERVAL = DemoMain.INTERVAL;
+    public final static String SYMBOL = DemoMain.SYMBOL;
+    public final static int KLINE_LIMITS = DemoMain.KLINE_LIMITS;
     //Use period for init klines
-    public final static Date STOP_DATE = SmaBackTest.STOP_DATE;
-    public final static int SHIFT_AMOUNT = SmaBackTest.SHIFT_AMOUNT;
+    public final static Date STOP_DATE = DemoMain.STOP_DATE;
+    public final static int SHIFT_AMOUNT = DemoMain.SHIFT_AMOUNT;
 
 
     public static void main(String[] args) throws Exception {
@@ -65,13 +65,6 @@ public class BarSeriesToExcel extends ExcelProcessor {
             row.put("C", String.valueOf(bar.getClosePrice()));
             row.put("V", String.valueOf(bar.getVolume()));
             table.addRow(row);
-//
-//            DateUtil.printHighlight("Test..");
-//            DateUtil.printHighlight("ZonedDateTime.." + bar.getEndTime());
-//            long time = Timestamp.from(bar.getEndTime().toInstant()).getTime();
-//            DateUtil.printHighlight("Timestamp.." + time);
-//            DateUtil.printHighlight("TimestampToDateTime.." + DateUtil.convertToString(new Date(time)));
-//            DateUtil.printHighlight("TimestampToZonedDateTime.." +  ZonedDateTime.ofInstant(new Date(time).toInstant(), ZoneId.systemDefault()));
         }
         Bar firstBar = barSeries.getFirstBar();
         Bar lastBar = barSeries.getLastBar();

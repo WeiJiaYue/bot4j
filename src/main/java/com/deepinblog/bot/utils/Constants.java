@@ -10,7 +10,7 @@ public interface Constants {
 
     double TAKER_FEE = 0.00040;
     String PROJECT_PATH = System.getProperty("user.dir");
-    String SRC_PATH = "/src/main/java/com.deepinblog.bot/file/";
+    String SRC_PATH = "/src/main/java/com/deepinblog/bot/file/";
     String FILE_PATH = PROJECT_PATH + SRC_PATH;
     int KLINE_LIMITS = 1500;
 

@@ -122,27 +122,27 @@ public class TradingHelper {
     }
 
 
-    public static void enableShutdownOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+    public static void enableShutdownOrderTraceMonitor(TradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
         enableShutdownOrderTraceMonitor(smaTradingExecutor, orderTrace, true);
     }
 
 
-    public static void enableShutdownOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace, boolean dump) {
+    public static void enableShutdownOrderTraceMonitor(TradingExecutor smaTradingExecutor, OrderTrace orderTrace, boolean dump) {
         Runtime.getRuntime().addShutdownHook(new Thread(
                 new OrderTraceRunnable("ShutdownMonitor", orderTrace, smaTradingExecutor, dump)));
     }
 
 
-    public static void enableScheduledOrderTraceMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+    public static void enableScheduledOrderTraceMonitor(TradingExecutor tradingExecutor, OrderTrace orderTrace) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
-                new OrderTraceRunnable("ScheduledMonitor", orderTrace, smaTradingExecutor, false),
+                new OrderTraceRunnable("ScheduledMonitor", orderTrace, tradingExecutor, false),
                 10,
                 10,
                 TimeUnit.SECONDS);
     }
 
 
-    public static void enableCLIMonitor(SmaTradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
+    public static void enableCLIMonitor(TradingExecutor tradingExecutor, OrderTrace orderTrace) {
         Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
         while (scan.hasNextLine()) {
             try {
@@ -157,9 +157,9 @@ public class TradingHelper {
                     System.err.println("PeekSize");
                     System.err.println("PeekOrders");
                 } else if ("Snapshot".equalsIgnoreCase(instruction)) {
-                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, smaTradingExecutor, false)).start();
+                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, tradingExecutor, false)).start();
                 } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
-                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, smaTradingExecutor, true)).start();
+                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, tradingExecutor, true)).start();
                 } else if ("PeekSize".equalsIgnoreCase(instruction)) {
                     printHighlight("Current trading order size :" + orderTrace.getOrders().size());
                 } else if ("PeekOrders".equalsIgnoreCase(instruction)) {

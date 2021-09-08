@@ -120,7 +120,7 @@ public class OrderTrace implements Cloneable {
     }
 
 
-    public void dump(SmaTradingExecutor smaTradingExecutor) {
+    public void dump(TradingExecutor tradingExecutor) {
         OrderTrace snapshot = snapshot();
         new ExcelProcessor(Constants.FILE_PATH) {
             @Override
@@ -136,9 +136,9 @@ public class OrderTrace implements Cloneable {
 
             @Override
             public void doProcess(ExcelTable table) throws Exception {
-                BarSeries barSeries = smaTradingExecutor.getSource().getBarSeries();
+                BarSeries barSeries = tradingExecutor.getSource().getBarSeries();
 
-                for (int i = 0; i <= smaTradingExecutor.getSource().getBarSeries().getEndIndex(); i++) {
+                for (int i = 0; i <= tradingExecutor.getSource().getBarSeries().getEndIndex(); i++) {
                     Bar bar = barSeries.getBar(i);
                     Map<String, Object> row = table.createEmptyRow();
                     row.put("Date", bar.getEndTime());
@@ -147,8 +147,6 @@ public class OrderTrace implements Cloneable {
                     row.put("C", String.valueOf(bar.getClosePrice()));
                     row.put("L", String.valueOf(bar.getLowPrice()));
                     row.put("V", String.valueOf(bar.getVolume()));
-                    row.put("MA5", String.valueOf(smaTradingExecutor.getShortSmaIndicator().getValue(i).doubleValue()));
-                    row.put("MA10", String.valueOf(smaTradingExecutor.getLongSmaIndicator().getValue(i).doubleValue()));
                     table.addRow(row);
                     List<OrderRecord> orders = snapshot.getOrdersByDate(bar.getEndTime());
                     if (orders != null && !orders.isEmpty()) {

@@ -16,10 +16,10 @@ public class OrderTraceRunnable implements Runnable {
 
     private final String caller;
     private final OrderTrace orderTrace;
-    private final SmaTradingExecutor smaTradingExecutor;
+    private final TradingExecutor smaTradingExecutor;
     private final boolean dump;
 
-    public OrderTraceRunnable(String caller, OrderTrace orderTrace, SmaTradingExecutor smaTradingExecutor, boolean dump) {
+    public OrderTraceRunnable(String caller, OrderTrace orderTrace, TradingExecutor smaTradingExecutor, boolean dump) {
         this.caller = caller;
         this.orderTrace = orderTrace;
         this.smaTradingExecutor = smaTradingExecutor;
