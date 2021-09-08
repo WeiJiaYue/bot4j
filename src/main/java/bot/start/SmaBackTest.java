@@ -13,7 +13,7 @@ import java.util.Date;
 public class SmaBackTest extends SmaTradingExecutor {
 
     //Customs
-    public static String SYMBOL = "BTCUSDT";
+    public static String SYMBOL = "ETHUSDT";
     public static CandlestickInterval INTERVAL = CandlestickInterval.HOURLY;
     //Init balance
     public final static OrderTrace ORDER_TRACE = new OrderTrace(1000);
@@ -22,7 +22,7 @@ public class SmaBackTest extends SmaTradingExecutor {
 
     //
     public static int KLINE_LIMITS = 1500;
-    public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "09", "01", "08");
+    public final static Date STOP_DATE = DateUtil.getHistoricalDate("2021", "01", "07", "18");
     public final static int SHIFT_AMOUNT = 500;
 
 
