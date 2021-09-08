@@ -127,9 +127,10 @@ public class OrderTrace implements Cloneable {
             protected ExcelTable getExcelTable() {
                 ExcelTable table = new ExcelTable();
                 table.addColumn("Date").addColumn("O").addColumn("H").addColumn("C").addColumn("L").addColumn("V")
-                        .addColumn("MA5").addColumn("MA10").addColumn("LastPrice")
+                        .addColumn("LastPrice")
                         .addColumn("Balance").addColumn("Txid").addColumn("Ops").addColumn("Time")
-                        .addColumn("Point").addColumn("StopLoss").addColumn("TV").addColumn("Quantity").addColumn("Fee").addColumn("Profit")
+                        .addColumn("Point").addColumn("StopLoss").addColumn("TV")
+                        .addColumn("Quantity").addColumn("Fee").addColumn("Profit")
                         .addColumn("OrderDetail");
                 return table;
             }

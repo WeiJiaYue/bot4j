@@ -1,14 +1,10 @@
 package com.deepinblog.bot.framework;
 
 import com.deepinblog.bot.utils.DateUtil;
-import com.alibaba.fastjson.JSON;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.Candlestick;
 import com.binance.client.model.market.OrderBook;
-import org.apache.commons.lang3.StringUtils;
-import org.ta4j.core.Bar;
-import org.ta4j.core.BarSeries;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -83,45 +79,6 @@ public class TradingHelper {
     }
 
 
-    public static double getStopLossWhenLong(BarSeries barSeries, double openPrice,
-                                             int stopLossOffset, boolean lossLess, double stopLossPercentage, int index) {
-        int stopLossIdx = index;
-        Bar stopLossBar = barSeries.getBar(--stopLossIdx);
-        double stopLoss = stopLossBar.getLowPrice().doubleValue();
-        //default stopLossOffset is 5
-        for (int i = stopLossIdx; i > stopLossIdx - stopLossOffset; i--) {
-            Bar pre = barSeries.getBar(i);
-            double other = pre.getLowPrice().doubleValue();
-            stopLoss = Math.min(stopLoss, other);
-        }
-        if (lossLess) {
-            stopLoss = Math.max(stopLoss, openPrice * (1 - stopLossPercentage));
-        } else {
-            stopLoss = Math.min(stopLoss, openPrice * (1 - stopLossPercentage));
-        }
-        return stopLoss;
-    }
-
-    public static double getStopLossWhenShort(BarSeries barSeries, double openPrice,
-                                              int stopLossOffset, boolean lossLess, double stopLossPercentage, int index) {
-        int stopLossIdx = index;
-        Bar stopLossBar = barSeries.getBar(--stopLossIdx);
-        double stopLoss = stopLossBar.getLowPrice().doubleValue();
-        //default stopLossOffset is 5
-        for (int i = stopLossIdx; i > stopLossIdx - stopLossOffset; i--) {
-            Bar pre = barSeries.getBar(i);
-            double other = pre.getHighPrice().doubleValue();
-            stopLoss = Math.max(stopLoss, other);
-        }
-        if (lossLess) {
-            stopLoss = Math.min(stopLoss, openPrice * (1 + stopLossPercentage));
-        } else {
-            stopLoss = Math.max(stopLoss, openPrice * (1 + stopLossPercentage));
-        }
-        return stopLoss;
-    }
-
-
     public static void enableShutdownOrderTraceMonitor(TradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
         enableShutdownOrderTraceMonitor(smaTradingExecutor, orderTrace, true);
     }
@@ -139,39 +96,6 @@ public class TradingHelper {
                 10,
                 10,
                 TimeUnit.SECONDS);
-    }
-
-
-    public static void enableCLIMonitor(TradingExecutor tradingExecutor, OrderTrace orderTrace) {
-        Scanner scan = new Scanner(System.in);    //构造Scanner类的对象scan，接收从控制台输入的信息
-        while (scan.hasNextLine()) {
-            try {
-                String instruction = scan.nextLine();
-                if (StringUtils.isBlank(instruction)) {
-                    continue;
-                }
-                if ("help".equalsIgnoreCase(instruction)) {
-                    System.err.println("Current supported instructions are:");
-                    System.err.println("Snapshot");
-                    System.err.println("SnapshotDump");
-                    System.err.println("PeekSize");
-                    System.err.println("PeekOrders");
-                } else if ("Snapshot".equalsIgnoreCase(instruction)) {
-                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, tradingExecutor, false)).start();
-                } else if ("SnapshotDump".equalsIgnoreCase(instruction)) {
-                    new Thread(new OrderTraceRunnable("CLIMonitor", orderTrace, tradingExecutor, true)).start();
-                } else if ("PeekSize".equalsIgnoreCase(instruction)) {
-                    printHighlight("Current trading order size :" + orderTrace.getOrders().size());
-                } else if ("PeekOrders".equalsIgnoreCase(instruction)) {
-                    printHighlight("Current trading orders :" + JSON.toJSONString(orderTrace.getOrders()));
-                } else {
-                    System.err.println("Wrong instruction!!!");
-                }
-            } catch (Exception e) {
-                printHighlight("CLI exception!!!");
-                e.printStackTrace();
-            }
-        }
     }
 
 
