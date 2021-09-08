@@ -79,14 +79,10 @@ public class TradingHelper {
     }
 
 
-    public static void enableShutdownOrderTraceMonitor(TradingExecutor smaTradingExecutor, OrderTrace orderTrace) {
-        enableShutdownOrderTraceMonitor(smaTradingExecutor, orderTrace, true);
-    }
 
-
-    public static void enableShutdownOrderTraceMonitor(TradingExecutor smaTradingExecutor, OrderTrace orderTrace, boolean dump) {
+    public static void enableShutdownOrderTraceMonitor(TradingExecutor tradingExecutor, OrderTrace orderTrace, boolean dump) {
         Runtime.getRuntime().addShutdownHook(new Thread(
-                new OrderTraceRunnable("ShutdownMonitor", orderTrace, smaTradingExecutor, dump)));
+                new OrderTraceRunnable("ShutdownMonitor", orderTrace, tradingExecutor, dump)));
     }
 
 
