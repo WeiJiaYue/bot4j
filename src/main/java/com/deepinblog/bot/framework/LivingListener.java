@@ -1,4 +1,4 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
 import org.ta4j.core.Bar;
 

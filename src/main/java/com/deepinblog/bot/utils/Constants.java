@@ -1,6 +1,6 @@
-package bot.utils;
+package com.deepinblog.bot.utils;
 
-import bot.utils.excel.ExcelTable;
+import com.deepinblog.bot.utils.excel.ExcelTable;
 import com.binance.client.model.enums.CandlestickInterval;
 
 /**
@@ -10,7 +10,7 @@ public interface Constants {
 
     double TAKER_FEE = 0.00040;
     String PROJECT_PATH = System.getProperty("user.dir");
-    String SRC_PATH = "/src/main/java/bot/file/";
+    String SRC_PATH = "/src/main/java/com.deepinblog.bot/file/";
     String FILE_PATH = PROJECT_PATH + SRC_PATH;
     int KLINE_LIMITS = 1500;
 

@@ -1,18 +1,13 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
-import bot.utils.excel.ExcelProcessor;
-import bot.utils.excel.ExcelTable;
+import com.deepinblog.bot.utils.excel.ExcelProcessor;
+import com.deepinblog.bot.utils.excel.ExcelTable;
 import com.binance.client.model.enums.CandlestickInterval;
-import com.binance.client.model.market.Candlestick;
-import org.ta4j.core.BarSeries;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**

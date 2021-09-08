@@ -1,6 +1,6 @@
 package com.binance.client.examples.market;
 
-import bot.utils.DateUtil;
+import com.deepinblog.bot.utils.DateUtil;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 

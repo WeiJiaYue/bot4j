@@ -1,4 +1,4 @@
-package bot.utils;
+package com.deepinblog.bot.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

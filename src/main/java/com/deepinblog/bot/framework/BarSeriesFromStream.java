@@ -1,4 +1,4 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.market.SymbolPrice;
@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
-import static bot.utils.DateUtil.printHighlight;
+import static com.deepinblog.bot.utils.DateUtil.printHighlight;
 
 /**
  * Created by louisyuu on 2021/8/20 1:08 下午

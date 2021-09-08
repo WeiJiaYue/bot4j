@@ -1,4 +1,4 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
 import com.binance.client.SubscriptionClient;
 import com.binance.client.SyncRequestClient;
@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
-import static bot.utils.DateUtil.print;
+import static com.deepinblog.bot.utils.DateUtil.print;
 
 /**
  * Created by louisyuu on 2021/9/6 3:11 下午

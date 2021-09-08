@@ -1,6 +1,6 @@
 package com.binance.client.examples.websocket;
 
-import bot.utils.DateUtil;
+import com.deepinblog.bot.utils.DateUtil;
 import com.binance.client.SubscriptionClient;
 
 public class SubscribeSymbolTicker {

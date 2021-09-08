@@ -1,6 +1,6 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
-import bot.utils.DateUtil;
+import com.deepinblog.bot.utils.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.model.enums.CandlestickInterval;
@@ -15,9 +15,9 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static bot.utils.Constants.TAKER_FEE;
-import static bot.utils.DateUtil.print;
-import static bot.utils.DateUtil.printHighlight;
+import static com.deepinblog.bot.utils.Constants.TAKER_FEE;
+import static com.deepinblog.bot.utils.DateUtil.print;
+import static com.deepinblog.bot.utils.DateUtil.printHighlight;
 
 /**
  * Created by louisyuu on 2021/9/3 2:38 下午

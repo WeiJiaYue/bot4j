@@ -1,11 +1,11 @@
-package bot.framework;
+package com.deepinblog.bot.framework;
 
 
-import bot.utils.DateUtil;
+import com.deepinblog.bot.utils.DateUtil;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
-import static bot.utils.DateUtil.printHighlight;
+import static com.deepinblog.bot.utils.DateUtil.printHighlight;
 
 
 /**
