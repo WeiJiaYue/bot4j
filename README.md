@@ -1,1 +1,0 @@
-https://ta4j.github.io/ta4j-wiki/Getting-started.html

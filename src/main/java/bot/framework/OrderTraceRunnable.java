@@ -5,8 +5,6 @@ import bot.utils.DateUtil;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 
-import java.time.format.DateTimeFormatterBuilder;
-
 import static bot.utils.DateUtil.printHighlight;
 
 
